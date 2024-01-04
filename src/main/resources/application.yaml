@@ -1,0 +1,19 @@
+spring:
+  datasource:
+    username: eskil
+    password: password
+    url: jdbc:postgresql://localhost:5432/eskil
+  jpa:
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+    database: postgresql
+    show-sql: 'true'
+    hibernate:
+      ddl-auto: none
+  application:
+    name: people-server
+  flyway:
+    baseline-on-migrate: true
+server:
+  port: '8080'
