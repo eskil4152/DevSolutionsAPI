@@ -1,6 +1,6 @@
 package com.devsolutions.DevSolutionsAPI.Services;
 
-import com.devsolutions.DevSolutionsAPI.Entities.ProductEntity;
+import com.devsolutions.DevSolutionsAPI.Entities.Products;
 import com.devsolutions.DevSolutionsAPI.Repositories.ProductRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -18,12 +18,11 @@ public class ProductService {
         this.productRepository = productRepository;
     }
 
-
-    public Optional<ProductEntity> getProduct(long id){
+    public Optional<Products> getProduct(long id){
         return productRepository.findById(id);
     }
 
-    public List<ProductEntity> getAllProducts(){
+    public List<Products> getAllProducts(){
         return productRepository.findAll();
     }
 }
