@@ -14,6 +14,7 @@ public class Accounts {
 
     String username;
     String password;
+    Integer authorizationLevel = 1;
 
     public Long getId() {
         return id;
@@ -25,6 +26,10 @@ public class Accounts {
 
     public String getPassword() {
         return password;
+    }
+
+    public Integer getAuthorizationLevel() {
+        return authorizationLevel;
     }
 
     public Accounts(String username, String password) {
