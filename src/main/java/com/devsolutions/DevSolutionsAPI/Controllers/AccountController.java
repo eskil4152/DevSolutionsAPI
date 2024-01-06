@@ -1,9 +1,12 @@
 package com.devsolutions.DevSolutionsAPI.Controllers;
 
+import com.devsolutions.DevSolutionsAPI.JwtUtil;
 import com.devsolutions.DevSolutionsAPI.RequestBodies.LoginRequest;
+import com.devsolutions.DevSolutionsAPI.RequestBodies.TokenRequest;
 import com.devsolutions.DevSolutionsAPI.Services.AccountService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -41,6 +44,22 @@ public class AccountController {
             return ResponseEntity.status(401).body("Username already registered");
 
         return ResponseEntity.ok("Registered");
+    }
+
+    @GetMapping("/api/tokentest")
+    public ResponseEntity<String> TokenTest(){
+        String token = JwtUtil.generateToken("eskil", "4");
+        System.out.println("Token: " + token);
+
+        return ResponseEntity.ok(token);
+    }
+
+    @PostMapping("/api/checktoken")
+    public void TokenCheck(@RequestBody TokenRequest tokenRequest){
+        String token = tokenRequest.getToken();
+        System.out.println("Token: " + token);
+
+        System.out.println("Token-level: " + JwtUtil.parseToken(token));
     }
 }
 
