@@ -7,25 +7,26 @@ import io.jsonwebtoken.SignatureAlgorithm;
 import java.util.Date;
 
 public class JwtUtil {
-    private static final String secret = "secret-tester";
-    private static final long time = 86_400_000;
+    private static final String SECRET = "secret-tester";
+    private static final long EXPIRATION_TIME = 86_400_000; // 24 hours
 
-    private static final String prefix = "Bearer ";
-    private static final String header_string = "Authorization";
-    private static final String level_claim = "level";
+    private static final String PREFIX = "Bearer ";
+    private static final String HEADER_STRING = "Authorization";
+    private static final String ROLE_CLAIM = "role";
 
-    public static String generateToken(String username, String level){
+
+    public static String generateToken(String username, String role) {
         return Jwts.builder()
                 .setSubject(username)
-                .claim(level_claim, level)
-                .setExpiration(new Date(System.currentTimeMillis() + time))
-                .signWith(SignatureAlgorithm.HS512, secret)
+                .claim(ROLE_CLAIM, role)
+                .setExpiration(new Date(System.currentTimeMillis() + EXPIRATION_TIME))
+                .signWith(SignatureAlgorithm.HS512, SECRET)
                 .compact();
     }
 
-    public static Claims parseToken(String token){
+    public static Claims parseToken(String token) {
         return Jwts.parser()
-                .setSigningKey(secret)
+                .setSigningKey(SECRET)
                 .parseClaimsJws(token)
                 .getBody();
     }

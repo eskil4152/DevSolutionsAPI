@@ -48,7 +48,15 @@ public class AccountController {
 
     @GetMapping("/api/tokentest")
     public ResponseEntity<String> TokenTest(){
-        String token = JwtUtil.generateToken("eskil", "4");
+        String token = JwtUtil.generateToken("eskil", "ADMIN");
+        System.out.println("Token: " + token);
+
+        return ResponseEntity.ok(token);
+    }
+
+    @GetMapping("/api/tokentest2")
+    public ResponseEntity<String> TokenTest2(){
+        String token = JwtUtil.generateToken("eskil", "USER");
         System.out.println("Token: " + token);
 
         return ResponseEntity.ok(token);
