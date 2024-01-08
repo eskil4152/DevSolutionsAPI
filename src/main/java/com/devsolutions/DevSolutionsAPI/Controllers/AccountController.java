@@ -46,26 +46,9 @@ public class AccountController {
         return ResponseEntity.ok("Registered");
     }
 
-    @GetMapping("/api/tokentest")
-    public ResponseEntity<String> TokenTest(){
-        String token = JwtUtil.generateToken("eskil", "ADMIN");
-        System.out.println("Token: " + token);
-
-        return ResponseEntity.ok(token);
-    }
-
-    @GetMapping("/api/tokentest2")
-    public ResponseEntity<String> TokenTest2(){
-        String token = JwtUtil.generateToken("eskil", "USER");
-        System.out.println("Token: " + token);
-
-        return ResponseEntity.ok(token);
-    }
-
     @PostMapping("/api/checktoken")
     public void TokenCheck(@RequestBody TokenRequest tokenRequest){
         String token = tokenRequest.getToken();
-        System.out.println("Token: " + token);
 
         System.out.println("Token-level: " + JwtUtil.parseToken(token));
     }
