@@ -1,0 +1,2 @@
+INSERT INTO faq (id, question, answer) VALUES ((SELECT nextval('faq_id_generator')), 'Queston One', 'Answer One');
+INSERT INTO faq (id, question, answer) VALUES ((SELECT nextval('faq_id_generator')), 'Queston Two', 'Answer Two');
