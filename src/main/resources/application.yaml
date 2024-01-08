@@ -2,7 +2,7 @@ spring:
   datasource:
     username: eskil
     password: password
-    url: jdbc:postgresql://localhost:5432/eskil
+    url: jdbc:postgresql://localhost:5433/eskil
   jpa:
     properties:
       hibernate:

@@ -1,5 +1,6 @@
 package com.devsolutions.DevSolutionsAPI.Controllers;
 
+import com.devsolutions.DevSolutionsAPI.Entities.AccountCompact;
 import com.devsolutions.DevSolutionsAPI.Entities.Accounts;
 import com.devsolutions.DevSolutionsAPI.Entities.UserRole;
 import com.devsolutions.DevSolutionsAPI.JwtUtil;
@@ -42,9 +43,8 @@ public class AccountController {
 
         Cookie cookie = new Cookie("Authorization", token);
         cookie.setPath("/");
-        cookie.setSecure(true);
+        cookie.setSecure(false);
         cookie.setHttpOnly(true);
-        cookie.setMaxAge(3600);
         response.addCookie(cookie);
 
         return ResponseEntity.ok("Logged in " + username);
@@ -65,7 +65,7 @@ public class AccountController {
 
         Cookie cookie = new Cookie("Authorization", token);
         cookie.setPath("/");
-        cookie.setSecure(true);
+        cookie.setSecure(false);
         cookie.setHttpOnly(true);
         cookie.setMaxAge(3600);
         response.addCookie(cookie);
@@ -74,8 +74,13 @@ public class AccountController {
     }
 
     @GetMapping("/api/user")
-    public ResponseEntity<Optional<Accounts>> getUser(HttpServletRequest request){
+    public ResponseEntity<Optional<AccountCompact>> getUser(HttpServletRequest request){
         Cookie[] cookies = request.getCookies();
+
+        if (cookies == null) {
+            System.out.println("Null cookie");
+            return ResponseEntity.status(404).body(Optional.empty());
+        }
 
         for (Cookie cookie : cookies) {
             if (cookie.getName().equals("Authorization")) {
@@ -85,10 +90,18 @@ public class AccountController {
 
                 Optional<Accounts> user = accountService.getUser(username);
 
-                if (user.isEmpty())
+                if (user.isEmpty()){
+                    System.out.println("Empty user");
                     return ResponseEntity.status(404).body(Optional.empty());
+                }
 
-                return ResponseEntity.ok(user);
+                AccountCompact accountCompact = new AccountCompact(
+                        user.get().getUsername(),
+                        user.get().getEmail(),
+                        user.get().getRole()
+                );
+
+                return ResponseEntity.ok(Optional.of(accountCompact));
             }
         }
 
@@ -111,15 +124,4 @@ public class AccountController {
 
         System.out.println("Failed");
     }
-
-    @GetMapping("/api/cookie")
-    public ResponseEntity<String> GetCookie(HttpServletResponse response){
-        String token = JwtUtil.generateToken("eskil", UserRole.ADMIN);
-        Cookie cookie = new Cookie("Authorization", token);
-        cookie.setPath("/");
-        response.addCookie(cookie);
-
-        return ResponseEntity.ok("OK");
-    }
 }
-

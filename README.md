@@ -2,6 +2,9 @@
 
 The server for DevSolutions website and services
 
+# SET COOKIE ON SECURE BEFORE PRODUCTION
+### secure cookie unavailable over http on safari
+
 ## TODO
 - [x] FAQ Controller
 - [ ] FAQ Edit

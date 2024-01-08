@@ -1,5 +1,7 @@
 package com.devsolutions.DevSolutionsAPI.Entities;
 
-public enum UserRole {
+import java.io.Serializable;
+
+public enum UserRole implements Serializable {
     OWNER, ADMIN, MODERATOR, USER
 }

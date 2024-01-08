@@ -17,6 +17,7 @@ public class SecurityConfig {
                         .requestMatchers("/api/faq/**").permitAll()
                         .requestMatchers("/api/login").permitAll()
                         .requestMatchers("/api/register").permitAll()
+                        .requestMatchers("/api/**").permitAll()
                         .anyRequest().authenticated())
                 .csrf().disable()
                         .addFilterBefore(jwtFilter(), UsernamePasswordAuthenticationFilter.class);
