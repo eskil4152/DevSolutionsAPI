@@ -47,4 +47,8 @@ public class AccountService {
         return Optional.of(newUser);
     }
 
+    public Optional<Accounts> getUser(String username) {
+        return accountRepository.findByUsername(username);
+    }
+
 }

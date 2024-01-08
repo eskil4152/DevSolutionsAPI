@@ -1,9 +1,11 @@
 package com.devsolutions.DevSolutionsAPI.Controllers;
 
+import com.devsolutions.DevSolutionsAPI.Entities.Accounts;
 import com.devsolutions.DevSolutionsAPI.Entities.UserRole;
 import com.devsolutions.DevSolutionsAPI.JwtUtil;
 import com.devsolutions.DevSolutionsAPI.RequestBodies.LoginRequest;
 import com.devsolutions.DevSolutionsAPI.Services.AccountService;
+import io.jsonwebtoken.Claims;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -13,6 +15,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.util.Optional;
 
 @RestController
 public class AccountController {
@@ -69,13 +73,38 @@ public class AccountController {
         return ResponseEntity.ok("Registered " + username);
     }
 
+    @GetMapping("/api/user")
+    public ResponseEntity<Optional<Accounts>> getUser(HttpServletRequest request){
+        Cookie[] cookies = request.getCookies();
+
+        for (Cookie cookie : cookies) {
+            if (cookie.getName().equals("Authorization")) {
+                Claims claims = JwtUtil.parseToken(cookie.getValue());
+
+                String username = claims.getSubject();
+
+                Optional<Accounts> user = accountService.getUser(username);
+
+                if (user.isEmpty())
+                    return ResponseEntity.status(404).body(Optional.empty());
+
+                return ResponseEntity.ok(user);
+            }
+        }
+
+        return ResponseEntity.status(404).body(Optional.empty());
+    }
+
     @GetMapping("/api/checktoken")
     public void TokenCheck(HttpServletRequest request){
         Cookie[] cookies = request.getCookies();
         for (Cookie cookie : cookies) {
             if (cookie.getName().equals("Authorization")) {
-                System.out.println("Cookie found: " + cookie.getValue());
-                System.out.println("Auth: " + JwtUtil.parseToken(cookie.getValue()));
+
+                Claims claims = JwtUtil.parseToken(cookie.getValue());
+                System.out.println("Cookie belongs to: " + claims.getSubject());
+                System.out.println("Cookie auth level: " + claims.get("role"));
+
                 return;
             }
         }
