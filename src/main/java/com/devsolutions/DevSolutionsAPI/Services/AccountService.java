@@ -34,13 +34,13 @@ public class AccountService {
         return Optional.of(existingUser);
     }
 
-    public Optional<Accounts> register(String username, String password){
+    public Optional<Accounts> register(String username, String password, String email){
         Optional<Accounts> user = accountRepository.findByUsername(username);
 
         if (user.isPresent())
             return Optional.empty();
 
-        Accounts newUser = new Accounts(username, PasswordEncoder.hashPassword(password));
+        Accounts newUser = new Accounts(username, PasswordEncoder.hashPassword(password), email);
 
         return Optional.of(newUser);
     }

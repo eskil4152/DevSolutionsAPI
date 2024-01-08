@@ -1,5 +1,6 @@
 package com.devsolutions.DevSolutionsAPI;
 
+import com.devsolutions.DevSolutionsAPI.Entities.UserRole;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
@@ -15,7 +16,7 @@ public class JwtUtil {
     private static final String ROLE_CLAIM = "role";
 
 
-    public static String generateToken(String username, String role) {
+    public static String generateToken(String username, UserRole role) {
         return Jwts.builder()
                 .setSubject(username)
                 .claim(ROLE_CLAIM, role)

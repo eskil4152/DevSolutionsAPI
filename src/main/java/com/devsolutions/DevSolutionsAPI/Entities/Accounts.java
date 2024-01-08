@@ -14,7 +14,10 @@ public class Accounts {
 
     String username;
     String password;
-    Integer authorizationLevel = 1;
+    String email;
+
+    @Enumerated(EnumType.STRING)
+    UserRole role;
 
     public Long getId() {
         return id;
@@ -28,12 +31,18 @@ public class Accounts {
         return password;
     }
 
-    public Integer getAuthorizationLevel() {
-        return authorizationLevel;
+    public String getEmail(){
+        return email;
     }
 
-    public Accounts(String username, String password) {
+    public UserRole getRole() {
+        return role;
+    }
+
+    public Accounts(String username, String password, String email) {
         this.username = username;
         this.password = password;
+        this.email = email;
+        this.role = UserRole.USER;
     }
 }
