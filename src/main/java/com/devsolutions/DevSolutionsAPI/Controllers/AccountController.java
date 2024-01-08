@@ -38,6 +38,9 @@ public class AccountController {
 
         Cookie cookie = new Cookie("Authorization", token);
         cookie.setPath("/");
+        cookie.setSecure(true);
+        cookie.setHttpOnly(true);
+        cookie.setMaxAge(3600);
         response.addCookie(cookie);
 
         return ResponseEntity.ok("Logged in " + username);
@@ -58,6 +61,9 @@ public class AccountController {
 
         Cookie cookie = new Cookie("Authorization", token);
         cookie.setPath("/");
+        cookie.setSecure(true);
+        cookie.setHttpOnly(true);
+        cookie.setMaxAge(3600);
         response.addCookie(cookie);
 
         return ResponseEntity.ok("Registered " + username);

@@ -42,6 +42,8 @@ public class AccountService {
 
         Accounts newUser = new Accounts(username, PasswordEncoder.hashPassword(password), email);
 
+        accountRepository.save(newUser);
+
         return Optional.of(newUser);
     }
 
