@@ -12,6 +12,8 @@ public class Accounts {
     )
     Long id;
 
+    String firstname;
+    String lastname;
     String username;
     String password;
     String email;
@@ -24,6 +26,14 @@ public class Accounts {
 
     public Long getId() {
         return id;
+    }
+
+    public String getFirstname() {
+        return firstname;
+    }
+
+    public String getLastname() {
+        return lastname;
     }
 
     public String getUsername() {
@@ -42,7 +52,9 @@ public class Accounts {
         return role;
     }
 
-    public Accounts(String username, String password, String email) {
+    public Accounts(String firstname, String lastname, String username, String password, String email) {
+        this.firstname = firstname;
+        this.lastname = lastname;
         this.username = username;
         this.password = password;
         this.email = email;

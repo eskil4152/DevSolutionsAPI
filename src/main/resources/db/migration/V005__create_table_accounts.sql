@@ -1,5 +1,7 @@
 CREATE TABLE ACCOUNTS (
     id INTEGER PRIMARY KEY,
+    firstname VARCHAR(20),
+    lastname VARCHAR(40),
     username VARCHAR(20),
     email VARCHAR(40),
     password VARCHAR(255),
