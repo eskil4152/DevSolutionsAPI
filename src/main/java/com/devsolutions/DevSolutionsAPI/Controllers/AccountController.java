@@ -41,10 +41,11 @@ public class AccountController {
         UserRole role = user.get().getRole();
         String token = JwtUtil.generateToken(username, role);
 
-        Cookie cookie = new Cookie("Authorization", token);
+        Cookie cookie = new Cookie("Authentication", token);
         cookie.setPath("/");
         cookie.setSecure(false);
         cookie.setHttpOnly(true);
+        cookie.setMaxAge(3600);
         response.addCookie(cookie);
 
         return ResponseEntity.ok("Logged in " + username);
@@ -52,18 +53,22 @@ public class AccountController {
 
     @PostMapping("/api/register")
     public ResponseEntity<String> register(@RequestBody LoginRequest loginRequest, HttpServletResponse response){
+        String firstname = loginRequest.getFirstname();
+        String lastname = loginRequest.getLastname();
         String username = loginRequest.getUsername();
         String password = loginRequest.getPassword();
         String email = loginRequest.getEmail();
 
-        var user = accountService.register(username, password, email);
+        System.out.println("FN: " + firstname + ", LN: " + lastname);
+
+        var user = accountService.register(firstname, lastname, username, password, email);
 
         if (user.isEmpty())
             return ResponseEntity.status(401).body("Username already registered");
 
         String token = JwtUtil.generateToken(username, UserRole.USER);
 
-        Cookie cookie = new Cookie("Authorization", token);
+        Cookie cookie = new Cookie("Authentication", token);
         cookie.setPath("/");
         cookie.setSecure(false);
         cookie.setHttpOnly(true);
@@ -83,7 +88,7 @@ public class AccountController {
         }
 
         for (Cookie cookie : cookies) {
-            if (cookie.getName().equals("Authorization")) {
+            if (cookie.getName().equals("Authentication")) {
                 Claims claims = JwtUtil.parseToken(cookie.getValue());
 
                 String username = claims.getSubject();
@@ -96,6 +101,8 @@ public class AccountController {
                 }
 
                 AccountCompact accountCompact = new AccountCompact(
+                        user.get().getFirstname(),
+                        user.get().getLastname(),
                         user.get().getUsername(),
                         user.get().getEmail(),
                         user.get().getRole()
@@ -112,7 +119,7 @@ public class AccountController {
     public void TokenCheck(HttpServletRequest request){
         Cookie[] cookies = request.getCookies();
         for (Cookie cookie : cookies) {
-            if (cookie.getName().equals("Authorization")) {
+            if (cookie.getName().equals("Authentication")) {
 
                 Claims claims = JwtUtil.parseToken(cookie.getValue());
                 System.out.println("Cookie belongs to: " + claims.getSubject());

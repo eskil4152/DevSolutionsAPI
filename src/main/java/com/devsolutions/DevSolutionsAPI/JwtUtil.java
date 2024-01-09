@@ -1,6 +1,7 @@
 package com.devsolutions.DevSolutionsAPI;
 
 import com.devsolutions.DevSolutionsAPI.Entities.UserRole;
+import io.github.cdimascio.dotenv.Dotenv;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
@@ -8,13 +9,11 @@ import io.jsonwebtoken.SignatureAlgorithm;
 import java.util.Date;
 
 public class JwtUtil {
-    private static final String SECRET = "secret-tester";
-    private static final long EXPIRATION_TIME = 86_400_000; // 24 hours
+    static Dotenv dotenv = Dotenv.configure().load();
 
-    private static final String PREFIX = "Bearer ";
-    private static final String HEADER_STRING = "Authorization";
-    private static final String ROLE_CLAIM = "role";
-
+    private static final String SECRET = dotenv.get("JWT_SECRET");
+    private static final long EXPIRATION_TIME = 3_600_000; // 24 hours
+    private static final String ROLE_CLAIM = dotenv.get("ROLE_CLAIM");
 
     public static String generateToken(String username, UserRole role) {
         return Jwts.builder()
