@@ -45,6 +45,7 @@ public class AccountController {
         cookie.setPath("/");
         cookie.setSecure(false);
         cookie.setHttpOnly(true);
+        cookie.setMaxAge(3600);
         response.addCookie(cookie);
 
         return ResponseEntity.ok("Logged in " + username);

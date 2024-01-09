@@ -9,6 +9,7 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -28,8 +29,11 @@ public class JwtFilter extends OncePerRequestFilter {
     private static final String ROLE_CLAIM = dotenv.get("ROLE_CLAIM");
 
     @Override
-    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
-        try {
+    protected void doFilterInternal(
+            @NotNull HttpServletRequest request,
+            @NotNull HttpServletResponse response,
+            @NotNull FilterChain filterChain) throws ServletException, IOException
+    { try {
             String jwt = extractJwtFromRequest(request);
 
             if (jwt != null && Jwts.parser().setSigningKey(SECRET).isSigned(jwt)) {
@@ -61,8 +65,12 @@ public class JwtFilter extends OncePerRequestFilter {
         Cookie[] cookies = request.getCookies();
         if (cookies != null) {
             for (Cookie cookie : cookies) {
-                if (COOKIE_NAME.equals(cookie.getName())) {
-                    return cookie.getValue();
+                if (COOKIE_NAME != null){
+                    if (COOKIE_NAME.equals(cookie.getName())) {
+                        return cookie.getValue();
+                    }
+                } else {
+                    System.out.println("ERROR: Variable COOKIE_NAME not found, or value is null");
                 }
             }
         }
