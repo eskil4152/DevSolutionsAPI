@@ -2,7 +2,7 @@ package com.devsolutions.DevSolutionsAPI.Entities;
 
 import jakarta.persistence.*;
 
-import java.sql.Date;
+import java.util.Date;
 
 @Entity
 public class Orders {
@@ -26,11 +26,17 @@ public class Orders {
     Date orderDate;
     String notes;
     BillingInfo billingInfo;
+
+    public Orders() {
+    }
+
+    public Orders(Users user, Products products, Double price, Date orderDate, String notes, BillingInfo billingInfo) {
+        this.user = user;
+        this.products = products;
+        this.price = price;
+        this.orderDate = orderDate;
+        this.notes = notes;
+        this.billingInfo = billingInfo;
+    }
 }
 
-@Embeddable
-class BillingInfo {
-    String paymentMethod;
-    String paymentStatus;
-    String billingAddress;
-}

@@ -21,4 +21,24 @@ public class UserOrders {
     @ManyToOne
     @JoinColumn(name = "order_id")
     Orders order;
+
+    public Long getId() {
+        return id;
+    }
+
+    public Users getUser() {
+        return user;
+    }
+
+    public Orders getOrder() {
+        return order;
+    }
+
+    public UserOrders() {
+    }
+
+    public UserOrders(Users user, Orders order) {
+        this.user = user;
+        this.order = order;
+    }
 }
