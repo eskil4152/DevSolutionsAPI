@@ -37,6 +37,10 @@ public class Orders {
     @Enumerated(EnumType.STRING)
     OrderStatus orderStatus;
 
+    public Orders(){
+
+    }
+
     public Orders(Users user, Products products, Double price, Date orderDate, String notes, String paymentMethod, String billingAddress) {
         this.user = user;
         this.products = products;
@@ -47,5 +51,45 @@ public class Orders {
         this.billingAddress = billingAddress;
         this.paymentStatus = PaymentStatus.AWAITING_PAYMENT;
         this.orderStatus = OrderStatus.NOT_STARTED;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public Users getUser() {
+        return user;
+    }
+
+    public Products getProducts() {
+        return products;
+    }
+
+    public Double getPrice() {
+        return price;
+    }
+
+    public Date getOrderDate() {
+        return orderDate;
+    }
+
+    public String getNotes() {
+        return notes;
+    }
+
+    public String getPaymentMethod() {
+        return paymentMethod;
+    }
+
+    public String getBillingAddress() {
+        return billingAddress;
+    }
+
+    public PaymentStatus getPaymentStatus() {
+        return paymentStatus;
+    }
+
+    public OrderStatus getOrderStatus() {
+        return orderStatus;
     }
 }

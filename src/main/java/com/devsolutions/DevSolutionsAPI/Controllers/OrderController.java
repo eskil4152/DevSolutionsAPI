@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -55,7 +56,6 @@ public class OrderController {
         if (users.isEmpty())
             return ResponseEntity.status(401).build();
 
-        //Optional<List<Orders>> orders = userOrderService.getOrders(users.get().getUsername());
         List<Orders> orders = orderService.getOrder(users.get());
 
         return ResponseEntity.ok(orders);
