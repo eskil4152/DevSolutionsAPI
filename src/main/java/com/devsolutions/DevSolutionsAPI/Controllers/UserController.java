@@ -6,6 +6,7 @@ import com.devsolutions.DevSolutionsAPI.Entities.UserRole;
 import com.devsolutions.DevSolutionsAPI.Security.JwtUtil;
 import com.devsolutions.DevSolutionsAPI.RequestBodies.LoginRequest;
 import com.devsolutions.DevSolutionsAPI.Services.UserService;
+import com.devsolutions.DevSolutionsAPI.Tools.CheckCookie;
 import io.jsonwebtoken.Claims;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
@@ -22,10 +23,12 @@ import java.util.Optional;
 @RestController
 public class UserController {
     private final UserService userService;
+    private final CheckCookie checkCookie;
 
     @Autowired
     public UserController(UserService userService){
         this.userService = userService;
+        this.checkCookie = new CheckCookie(userService);
     }
 
     @PostMapping("/api/login")
@@ -78,38 +81,19 @@ public class UserController {
 
     @GetMapping("/api/user")
     public ResponseEntity<Optional<UserCompact>> getUser(HttpServletRequest request){
-        Cookie[] cookies = request.getCookies();
+        Optional<Users> user = checkCookie.CheckCookieForUser(request);
 
-        if (cookies == null) {
-            System.out.println("Null cookie");
-            return ResponseEntity.status(401).body(Optional.empty());
-        }
+        if (user.isEmpty())
+            return ResponseEntity.status(401).build();
 
-        for (Cookie cookie : cookies) {
-            if (cookie.getName().equals("Authentication")) {
-                Claims claims = JwtUtil.parseToken(cookie.getValue());
+        UserCompact userCompact = new UserCompact(
+                user.get().getFirstname(),
+                user.get().getLastname(),
+                user.get().getUsername(),
+                user.get().getEmail(),
+                user.get().getRole()
+        );
 
-                String username = claims.getSubject();
-
-                Optional<Users> user = userService.getUser(username);
-
-                if (user.isEmpty()){
-                    System.out.println("Empty user");
-                    return ResponseEntity.status(401).body(Optional.empty());
-                }
-
-                UserCompact userCompact = new UserCompact(
-                        user.get().getFirstname(),
-                        user.get().getLastname(),
-                        user.get().getUsername(),
-                        user.get().getEmail(),
-                        user.get().getRole()
-                );
-
-                return ResponseEntity.ok(Optional.of(userCompact));
-            }
-        }
-
-        return ResponseEntity.status(401).body(Optional.empty());
+        return ResponseEntity.ok(Optional.of(userCompact));
     }
 }

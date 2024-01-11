@@ -1,15 +1,12 @@
 package com.devsolutions.DevSolutionsAPI.Controllers;
 
-import com.devsolutions.DevSolutionsAPI.Entities.BillingInfo;
 import com.devsolutions.DevSolutionsAPI.Entities.Orders;
 import com.devsolutions.DevSolutionsAPI.Entities.Users;
 import com.devsolutions.DevSolutionsAPI.RequestBodies.OrderRequest;
-import com.devsolutions.DevSolutionsAPI.Security.JwtUtil;
 import com.devsolutions.DevSolutionsAPI.Services.OrderService;
 import com.devsolutions.DevSolutionsAPI.Services.UserOrderService;
 import com.devsolutions.DevSolutionsAPI.Services.UserService;
-import io.jsonwebtoken.Claims;
-import jakarta.servlet.http.Cookie;
+import com.devsolutions.DevSolutionsAPI.Tools.CheckCookie;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -24,44 +21,24 @@ public class OrderController {
     private final OrderService orderService;
     private final UserOrderService userOrderService;
     private final UserService userService;
+    private final CheckCookie checkCookie;
 
     public OrderController(OrderService orderService, UserOrderService userOrderService, UserService userService){
         this.orderService = orderService;
         this.userOrderService = userOrderService;
         this.userService = userService;
+        this.checkCookie = new CheckCookie(userService);
     }
 
     @GetMapping("/api/order/new")
     public ResponseEntity<Optional<Orders>> createNewOrder(@RequestBody OrderRequest orderRequest, HttpServletRequest request){
-        Cookie[] cookies = request.getCookies();
+        Optional<Users> user = checkCookie.CheckCookieForUser(request);
 
-        if (cookies == null) {
-            System.out.println("Null cookie");
-            return ResponseEntity.status(401).body(Optional.empty());
+        if (user.isEmpty()){
+            return ResponseEntity.status(401).build();
         }
 
-        Optional<Users> cookieUser = Optional.empty();
-
-        for (Cookie cookie : cookies) {
-            if (cookie.getName().equals("Authentication")) {
-                Claims claims = JwtUtil.parseToken(cookie.getValue());
-
-                String username = claims.getSubject();
-
-                cookieUser = userService.getUser(username);
-
-                if (cookieUser.isPresent()) {
-                    break;
-                }
-            }
-        }
-
-        if (cookieUser.isEmpty()) {
-            System.out.println("Empty user");
-            return ResponseEntity.status(401).body(Optional.empty());
-        }
-
-        Optional<Orders> order = orderService.newOrder(orderRequest, cookieUser.get());
+        Optional<Orders> order = orderService.newOrder(orderRequest, user.get());
 
         if (order.isEmpty())
             return ResponseEntity.status(422).build();
@@ -69,28 +46,30 @@ public class OrderController {
         return ResponseEntity.ok(order);
     }
 
-    @GetMapping("/api/order")
-    public ResponseEntity<String> getAllOrders(){
-        return ResponseEntity.status(501).build();
+    @GetMapping("/api/order/all")
+    public ResponseEntity<String> fetchOrderByUser(HttpServletRequest request){
+
+
+        return ResponseEntity.status(501).body("NOT IMPLEMENTED");
     }
 
-    @GetMapping("/api/order")
+    @GetMapping("/api/order/{id}")
     public ResponseEntity<String> getOneOrder(){
-        return ResponseEntity.status(501).build();
+        return ResponseEntity.status(501).body("NOT IMPLEMENTED");
     }
 
-    @GetMapping("/api/order")
+    @GetMapping("/api/order/update/{id}")
     public ResponseEntity<String> updateOrder(){
-        return ResponseEntity.status(501).build();
+        return ResponseEntity.status(501).body("NOT IMPLEMENTED");
     }
 
-    @GetMapping("/api/order")
+    @GetMapping("/api/order/cancel/{id}")
     public ResponseEntity<String> cancelOrder(){
-        return ResponseEntity.status(501).build();
+        return ResponseEntity.status(501).body("NOT IMPLEMENTED");
     }
 
-    @GetMapping("/api/order")
-    public ResponseEntity<String> fetchOrderByUser(){
-        return ResponseEntity.status(501).build();
+    @GetMapping("/api/order/admin/all")
+    public ResponseEntity<String> getAllOrders(){
+        return ResponseEntity.status(501).body("NOT IMPLEMENTED");
     }
 }
