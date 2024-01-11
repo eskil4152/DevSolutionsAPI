@@ -1,4 +1,4 @@
-package com.devsolutions.DevSolutionsAPI;
+package com.devsolutions.DevSolutionsAPI.Security;
 
 import com.devsolutions.DevSolutionsAPI.Entities.UserRole;
 import io.github.cdimascio.dotenv.Dotenv;

@@ -1,5 +1,6 @@
-package com.devsolutions.DevSolutionsAPI;
+package com.devsolutions.DevSolutionsAPI.Security;
 
+import com.devsolutions.DevSolutionsAPI.Security.JwtFilter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;

@@ -1,4 +1,4 @@
-package com.devsolutions.DevSolutionsAPI;
+package com.devsolutions.DevSolutionsAPI.Security;
 
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
