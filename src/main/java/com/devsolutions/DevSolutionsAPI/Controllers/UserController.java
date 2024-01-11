@@ -1,11 +1,11 @@
 package com.devsolutions.DevSolutionsAPI.Controllers;
 
-import com.devsolutions.DevSolutionsAPI.Entities.AccountCompact;
-import com.devsolutions.DevSolutionsAPI.Entities.Accounts;
+import com.devsolutions.DevSolutionsAPI.Entities.UserCompact;
+import com.devsolutions.DevSolutionsAPI.Entities.Users;
 import com.devsolutions.DevSolutionsAPI.Entities.UserRole;
-import com.devsolutions.DevSolutionsAPI.JwtUtil;
+import com.devsolutions.DevSolutionsAPI.Security.JwtUtil;
 import com.devsolutions.DevSolutionsAPI.RequestBodies.LoginRequest;
-import com.devsolutions.DevSolutionsAPI.Services.AccountService;
+import com.devsolutions.DevSolutionsAPI.Services.UserService;
 import io.jsonwebtoken.Claims;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
@@ -20,12 +20,12 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.Optional;
 
 @RestController
-public class AccountController {
-    private final AccountService accountService;
+public class UserController {
+    private final UserService userService;
 
     @Autowired
-    public AccountController(AccountService accountService){
-        this.accountService = accountService;
+    public UserController(UserService userService){
+        this.userService = userService;
     }
 
     @PostMapping("/api/login")
@@ -33,7 +33,7 @@ public class AccountController {
         String username = loginRequest.getUsername();
         String password = loginRequest.getPassword();
 
-        var user = accountService.login(username, password);
+        var user = userService.login(username, password);
 
         if (user.isEmpty())
             return ResponseEntity.status(401).body("No user matching credentials");
@@ -61,7 +61,7 @@ public class AccountController {
 
         System.out.println("FN: " + firstname + ", LN: " + lastname);
 
-        var user = accountService.register(firstname, lastname, username, password, email);
+        var user = userService.register(firstname, lastname, username, password, email);
 
         if (user.isEmpty())
             return ResponseEntity.status(401).body("Username already registered");
@@ -79,7 +79,7 @@ public class AccountController {
     }
 
     @GetMapping("/api/user")
-    public ResponseEntity<Optional<AccountCompact>> getUser(HttpServletRequest request){
+    public ResponseEntity<Optional<UserCompact>> getUser(HttpServletRequest request){
         Cookie[] cookies = request.getCookies();
 
         if (cookies == null) {
@@ -93,14 +93,14 @@ public class AccountController {
 
                 String username = claims.getSubject();
 
-                Optional<Accounts> user = accountService.getUser(username);
+                Optional<Users> user = userService.getUser(username);
 
                 if (user.isEmpty()){
                     System.out.println("Empty user");
                     return ResponseEntity.status(404).body(Optional.empty());
                 }
 
-                AccountCompact accountCompact = new AccountCompact(
+                UserCompact userCompact = new UserCompact(
                         user.get().getFirstname(),
                         user.get().getLastname(),
                         user.get().getUsername(),
@@ -108,27 +108,10 @@ public class AccountController {
                         user.get().getRole()
                 );
 
-                return ResponseEntity.ok(Optional.of(accountCompact));
+                return ResponseEntity.ok(Optional.of(userCompact));
             }
         }
 
         return ResponseEntity.status(404).body(Optional.empty());
-    }
-
-    @GetMapping("/api/checktoken")
-    public void TokenCheck(HttpServletRequest request){
-        Cookie[] cookies = request.getCookies();
-        for (Cookie cookie : cookies) {
-            if (cookie.getName().equals("Authentication")) {
-
-                Claims claims = JwtUtil.parseToken(cookie.getValue());
-                System.out.println("Cookie belongs to: " + claims.getSubject());
-                System.out.println("Cookie auth level: " + claims.get("role"));
-
-                return;
-            }
-        }
-
-        System.out.println("Failed");
     }
 }

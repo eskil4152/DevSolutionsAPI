@@ -4,9 +4,7 @@ import com.devsolutions.DevSolutionsAPI.Entities.Products;
 import com.devsolutions.DevSolutionsAPI.Services.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -36,5 +34,20 @@ public class ProductController {
         } else {
             return ResponseEntity.notFound().build();
         }
+    }
+
+    @PostMapping("/api/product/new")
+    public ResponseEntity<Products> addProduct(){
+        return ResponseEntity.ok(new Products());
+    }
+
+    @PostMapping("/api/product/delete/{id}")
+    public ResponseEntity<String> deleteProduct(){
+        return ResponseEntity.ok("");
+    }
+
+    @PutMapping("/api/product/update/{id}")
+    public ResponseEntity<Products> updateProduct(){
+        return ResponseEntity.ok(new Products());
     }
 }
