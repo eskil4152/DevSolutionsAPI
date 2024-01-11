@@ -59,12 +59,10 @@ public class UserController {
         String password = loginRequest.getPassword();
         String email = loginRequest.getEmail();
 
-        System.out.println("FN: " + firstname + ", LN: " + lastname);
-
         var user = userService.register(firstname, lastname, username, password, email);
 
         if (user.isEmpty())
-            return ResponseEntity.status(401).body("Username already registered");
+            return ResponseEntity.status(409).body("Username already registered");
 
         String token = JwtUtil.generateToken(username, UserRole.USER);
 
@@ -84,7 +82,7 @@ public class UserController {
 
         if (cookies == null) {
             System.out.println("Null cookie");
-            return ResponseEntity.status(404).body(Optional.empty());
+            return ResponseEntity.status(401).body(Optional.empty());
         }
 
         for (Cookie cookie : cookies) {
@@ -97,7 +95,7 @@ public class UserController {
 
                 if (user.isEmpty()){
                     System.out.println("Empty user");
-                    return ResponseEntity.status(404).body(Optional.empty());
+                    return ResponseEntity.status(401).body(Optional.empty());
                 }
 
                 UserCompact userCompact = new UserCompact(
@@ -112,6 +110,6 @@ public class UserController {
             }
         }
 
-        return ResponseEntity.status(404).body(Optional.empty());
+        return ResponseEntity.status(401).body(Optional.empty());
     }
 }

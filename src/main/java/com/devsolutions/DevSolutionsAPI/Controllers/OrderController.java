@@ -61,33 +61,36 @@ public class OrderController {
             return ResponseEntity.status(401).body(Optional.empty());
         }
 
-        Optional<Orders> orders = orderService.newOrder(orderRequest, cookieUser.get());
+        Optional<Orders> order = orderService.newOrder(orderRequest, cookieUser.get());
 
-        return ResponseEntity.ok(Optional.of(new Orders()));
+        if (order.isEmpty())
+            return ResponseEntity.status(422).build();
+
+        return ResponseEntity.ok(order);
     }
 
     @GetMapping("/api/order")
-    public ResponseEntity<> getAllOrders(){
-        return ResponseEntity.ok();
+    public ResponseEntity<String> getAllOrders(){
+        return ResponseEntity.status(501).build();
     }
 
     @GetMapping("/api/order")
-    public ResponseEntity<> getOneOrder(){
-        return ResponseEntity.ok();
+    public ResponseEntity<String> getOneOrder(){
+        return ResponseEntity.status(501).build();
     }
 
     @GetMapping("/api/order")
-    public ResponseEntity<> updateOrder(){
-        return ResponseEntity.ok();
+    public ResponseEntity<String> updateOrder(){
+        return ResponseEntity.status(501).build();
     }
 
     @GetMapping("/api/order")
-    public ResponseEntity<> cancelOrder(){
-        return ResponseEntity.ok();
+    public ResponseEntity<String> cancelOrder(){
+        return ResponseEntity.status(501).build();
     }
 
     @GetMapping("/api/order")
-    public ResponseEntity<> fetchOrderByUser(){
-        return ResponseEntity.ok();
+    public ResponseEntity<String> fetchOrderByUser(){
+        return ResponseEntity.status(501).build();
     }
 }

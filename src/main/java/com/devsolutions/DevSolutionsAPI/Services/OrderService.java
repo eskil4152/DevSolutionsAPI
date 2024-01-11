@@ -18,6 +18,7 @@ import java.util.Optional;
 public class OrderService {
 
     private final OrderRepository orderRepository;
+
     private final ProductService productService;
     private final UserOrderService userOrderService;
 
@@ -48,7 +49,7 @@ public class OrderService {
     }
 
     public void getAllOrders(){
-
+        return;
     }
 
     public void getOrder(){
