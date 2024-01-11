@@ -1,5 +1,6 @@
 package com.devsolutions.DevSolutionsAPI.Entities;
 
+import com.devsolutions.DevSolutionsAPI.Enums.UserRole;
 import jakarta.persistence.*;
 
 @Entity

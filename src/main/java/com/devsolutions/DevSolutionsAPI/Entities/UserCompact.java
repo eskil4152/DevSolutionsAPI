@@ -1,5 +1,7 @@
 package com.devsolutions.DevSolutionsAPI.Entities;
 
+import com.devsolutions.DevSolutionsAPI.Enums.UserRole;
+
 public class UserCompact {
     private String firstname;
     private String lastname;

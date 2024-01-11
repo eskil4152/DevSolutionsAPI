@@ -10,9 +10,11 @@ import com.devsolutions.DevSolutionsAPI.Tools.CheckCookie;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.List;
 import java.util.Optional;
 
 @RestController
@@ -30,7 +32,7 @@ public class OrderController {
         this.checkCookie = new CheckCookie(userService);
     }
 
-    @GetMapping("/api/order/new")
+    @PostMapping("/api/order/new")
     public ResponseEntity<Optional<Orders>> createNewOrder(@RequestBody OrderRequest orderRequest, HttpServletRequest request){
         Optional<Users> user = checkCookie.CheckCookieForUser(request);
 
@@ -47,10 +49,16 @@ public class OrderController {
     }
 
     @GetMapping("/api/order/all")
-    public ResponseEntity<String> fetchOrderByUser(HttpServletRequest request){
+    public ResponseEntity<List<Orders>> fetchOrderByUser(HttpServletRequest request){
+        Optional<Users> users = checkCookie.CheckCookieForUser(request);
 
+        if (users.isEmpty())
+            return ResponseEntity.status(401).build();
 
-        return ResponseEntity.status(501).body("NOT IMPLEMENTED");
+        //Optional<List<Orders>> orders = userOrderService.getOrders(users.get().getUsername());
+        List<Orders> orders = orderService.getOrder(users.get());
+
+        return ResponseEntity.ok(orders);
     }
 
     @GetMapping("/api/order/{id}")

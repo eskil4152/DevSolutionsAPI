@@ -4,12 +4,14 @@ import com.devsolutions.DevSolutionsAPI.Entities.Orders;
 import com.devsolutions.DevSolutionsAPI.Entities.Users;
 import jakarta.persistence.*;
 
+import java.util.List;
+
 @Entity
 public class UserOrders {
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "accountorder_id_generator")
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "user_order_id_generator")
     @SequenceGenerator(
-            name = "accountorder_id_generator",
+            name = "user_order_id_generator",
             allocationSize = 1
     )
     Long id;

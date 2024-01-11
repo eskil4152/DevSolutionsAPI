@@ -7,6 +7,9 @@ import com.devsolutions.DevSolutionsAPI.Repositories.UserOrderRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+import java.util.Optional;
+
 @Service
 public class UserOrderService {
 
@@ -20,9 +23,5 @@ public class UserOrderService {
     public void saveUserOrder(Users user, Orders order){
         UserOrders userOrder = new UserOrders(user, order);
         userOrderRepository.save(userOrder);
-    }
-
-    public void getOrders(){
-
     }
 }

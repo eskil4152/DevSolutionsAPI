@@ -1,6 +1,7 @@
 package com.devsolutions.DevSolutionsAPI.Services;
 
 import com.devsolutions.DevSolutionsAPI.Entities.*;
+import com.devsolutions.DevSolutionsAPI.Enums.PaymentStatus;
 import com.devsolutions.DevSolutionsAPI.Repositories.OrderRepository;
 import com.devsolutions.DevSolutionsAPI.RequestBodies.OrderRequest;
 import com.devsolutions.DevSolutionsAPI.Security.JwtUtil;
@@ -12,6 +13,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -33,14 +35,16 @@ public class OrderService {
         String name = orderRequest.getProductId();
         Double price = orderRequest.getPrice();
         String notes = orderRequest.getNotes();
-        BillingInfo info = orderRequest.getBillingInfo();
+        String billingAddress = orderRequest.getBillingAddress();
+        String paymentMethod = orderRequest.getPaymentMethod();
+
         Date orderDate = new Date();
         Optional<Products> product = productService.getProduct(Long.parseLong(name));
 
         if (product.isEmpty())
             return Optional.empty();
 
-        Orders order = new Orders(user, product.get(), price, orderDate, notes, info);
+        Orders order = new Orders(user, product.get(), price, orderDate, notes, billingAddress, paymentMethod);
 
         orderRepository.save(order);
         userOrderService.saveUserOrder(user, order);
@@ -52,8 +56,8 @@ public class OrderService {
         return;
     }
 
-    public void getOrder(){
-
+    public List<Orders> getOrder(Users user){
+        return orderRepository.findByUser(user);
     }
 
     public void updateOrder(){

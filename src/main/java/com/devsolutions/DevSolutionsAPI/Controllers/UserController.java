@@ -2,12 +2,11 @@ package com.devsolutions.DevSolutionsAPI.Controllers;
 
 import com.devsolutions.DevSolutionsAPI.Entities.UserCompact;
 import com.devsolutions.DevSolutionsAPI.Entities.Users;
-import com.devsolutions.DevSolutionsAPI.Entities.UserRole;
+import com.devsolutions.DevSolutionsAPI.Enums.UserRole;
 import com.devsolutions.DevSolutionsAPI.Security.JwtUtil;
 import com.devsolutions.DevSolutionsAPI.RequestBodies.LoginRequest;
 import com.devsolutions.DevSolutionsAPI.Services.UserService;
 import com.devsolutions.DevSolutionsAPI.Tools.CheckCookie;
-import io.jsonwebtoken.Claims;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;

@@ -1,5 +1,7 @@
 package com.devsolutions.DevSolutionsAPI.Entities;
 
+import com.devsolutions.DevSolutionsAPI.Enums.OrderStatus;
+import com.devsolutions.DevSolutionsAPI.Enums.PaymentStatus;
 import jakarta.persistence.*;
 
 import java.util.Date;
@@ -25,18 +27,25 @@ public class Orders {
     Double price;
     Date orderDate;
     String notes;
-    BillingInfo billingInfo;
 
-    public Orders() {
-    }
+    String paymentMethod;
+    String billingAddress;
 
-    public Orders(Users user, Products products, Double price, Date orderDate, String notes, BillingInfo billingInfo) {
+    @Enumerated(EnumType.STRING)
+    PaymentStatus paymentStatus;
+
+    @Enumerated(EnumType.STRING)
+    OrderStatus orderStatus;
+
+    public Orders(Users user, Products products, Double price, Date orderDate, String notes, String paymentMethod, String billingAddress) {
         this.user = user;
         this.products = products;
         this.price = price;
         this.orderDate = orderDate;
         this.notes = notes;
-        this.billingInfo = billingInfo;
+        this.paymentMethod = paymentMethod;
+        this.billingAddress = billingAddress;
+        this.paymentStatus = PaymentStatus.AWAITING_PAYMENT;
+        this.orderStatus = OrderStatus.NOT_STARTED;
     }
 }
-
