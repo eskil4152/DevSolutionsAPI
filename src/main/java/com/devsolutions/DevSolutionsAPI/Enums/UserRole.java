@@ -1,4 +1,4 @@
-package com.devsolutions.DevSolutionsAPI.Entities;
+package com.devsolutions.DevSolutionsAPI.Enums;
 
 import java.io.Serializable;
 

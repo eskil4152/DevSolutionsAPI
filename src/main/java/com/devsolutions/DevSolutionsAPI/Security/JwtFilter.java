@@ -1,4 +1,4 @@
-package com.devsolutions.DevSolutionsAPI;
+package com.devsolutions.DevSolutionsAPI.Security;
 
 import io.github.cdimascio.dotenv.Dotenv;
 import io.jsonwebtoken.Claims;

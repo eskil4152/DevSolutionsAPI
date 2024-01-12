@@ -1,15 +1,17 @@
 package com.devsolutions.DevSolutionsAPI.Entities;
 
-public class AccountCompact {
+import com.devsolutions.DevSolutionsAPI.Enums.UserRole;
+
+public class UserCompact {
     private String firstname;
     private String lastname;
     private String username;
     private String email;
     private UserRole role;
 
-    public AccountCompact(){}
+    public UserCompact(){}
 
-    public AccountCompact(String firstname, String lastname, String username, String email, UserRole role) {
+    public UserCompact(String firstname, String lastname, String username, String email, UserRole role) {
         this.firstname = firstname;
         this.lastname = lastname;
         this.username = username;

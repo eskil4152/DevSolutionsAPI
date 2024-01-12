@@ -1,6 +1,6 @@
-package com.devsolutions.DevSolutionsAPI;
+package com.devsolutions.DevSolutionsAPI.Security;
 
-import com.devsolutions.DevSolutionsAPI.Entities.UserRole;
+import com.devsolutions.DevSolutionsAPI.Enums.UserRole;
 import io.github.cdimascio.dotenv.Dotenv;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;

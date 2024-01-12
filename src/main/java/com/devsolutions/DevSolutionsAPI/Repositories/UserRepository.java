@@ -1,13 +1,13 @@
 package com.devsolutions.DevSolutionsAPI.Repositories;
 
-import com.devsolutions.DevSolutionsAPI.Entities.Accounts;
+import com.devsolutions.DevSolutionsAPI.Entities.Users;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 import java.util.Optional;
 
 @Repository
-public interface AccountRepository extends JpaRepository<Accounts, Long> {
+public interface UserRepository extends JpaRepository<Users, Long> {
 
-    Optional<Accounts> findByUsername(String username);
+    Optional<Users> findByUsername(String username);
 }

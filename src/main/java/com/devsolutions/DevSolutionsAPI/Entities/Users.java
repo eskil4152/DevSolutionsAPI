@@ -1,9 +1,10 @@
 package com.devsolutions.DevSolutionsAPI.Entities;
 
+import com.devsolutions.DevSolutionsAPI.Enums.UserRole;
 import jakarta.persistence.*;
 
 @Entity
-public class Accounts {
+public class Users {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "user_id_generator")
     @SequenceGenerator(
@@ -21,7 +22,7 @@ public class Accounts {
     @Enumerated(EnumType.STRING)
     UserRole role;
 
-    public Accounts() {
+    public Users() {
     }
 
     public Long getId() {
@@ -52,7 +53,7 @@ public class Accounts {
         return role;
     }
 
-    public Accounts(String firstname, String lastname, String username, String password, String email) {
+    public Users(String firstname, String lastname, String username, String password, String email) {
         this.firstname = firstname;
         this.lastname = lastname;
         this.username = username;
