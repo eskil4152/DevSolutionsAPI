@@ -50,15 +50,15 @@ public class OrderController {
     }
 
     @GetMapping("/api/order/all")
-    public ResponseEntity<List<Orders>> fetchOrderByUser(HttpServletRequest request){
+    public ResponseEntity<Optional<List<Orders>>> fetchOrderByUser(HttpServletRequest request){
         Optional<Users> users = checkCookie.CheckCookieForUser(request);
 
         if (users.isEmpty())
-            return ResponseEntity.status(401).build();
+            return ResponseEntity.status(401).body(Optional.empty());
 
         List<Orders> orders = orderService.getOrder(users.get());
 
-        return ResponseEntity.ok(orders);
+        return ResponseEntity.ok(Optional.ofNullable(orders));
     }
 
     @GetMapping("/api/order/{id}")
