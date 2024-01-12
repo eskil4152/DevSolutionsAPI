@@ -1,15 +1,11 @@
 package com.devsolutions.DevSolutionsAPI.Services;
 
-import com.devsolutions.DevSolutionsAPI.Entities.*;
-import com.devsolutions.DevSolutionsAPI.Enums.PaymentStatus;
+import com.devsolutions.DevSolutionsAPI.Entities.Orders;
+import com.devsolutions.DevSolutionsAPI.Entities.Products;
+import com.devsolutions.DevSolutionsAPI.Entities.Users;
 import com.devsolutions.DevSolutionsAPI.Repositories.OrderRepository;
 import com.devsolutions.DevSolutionsAPI.RequestBodies.OrderRequest;
-import com.devsolutions.DevSolutionsAPI.Security.JwtUtil;
-import io.jsonwebtoken.Claims;
-import jakarta.servlet.http.Cookie;
-import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;

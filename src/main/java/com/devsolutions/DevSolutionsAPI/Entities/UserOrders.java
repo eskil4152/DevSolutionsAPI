@@ -1,10 +1,6 @@
 package com.devsolutions.DevSolutionsAPI.Entities;
 
-import com.devsolutions.DevSolutionsAPI.Entities.Orders;
-import com.devsolutions.DevSolutionsAPI.Entities.Users;
 import jakarta.persistence.*;
-
-import java.util.List;
 
 @Entity
 public class UserOrders {
