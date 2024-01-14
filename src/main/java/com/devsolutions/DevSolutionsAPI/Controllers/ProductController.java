@@ -7,6 +7,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 public class ProductController {
@@ -25,14 +26,13 @@ public class ProductController {
     }
 
     @GetMapping("/api/product/{id}")
-    public ResponseEntity<List<Products>> getProduct(@PathVariable long id) {
+    public ResponseEntity<Optional<Products>> getProduct(@PathVariable long id) {
         var response = productService.getProduct(id);
 
         if (response.isPresent()) {
-            List<Products> productList = List.of(response.get());
-            return ResponseEntity.ok(productList);
+            return ResponseEntity.ok(response);
         } else {
-            return ResponseEntity.notFound().build();
+            return ResponseEntity.status(404).body(Optional.empty());
         }
     }
 

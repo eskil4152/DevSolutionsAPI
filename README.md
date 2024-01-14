@@ -25,21 +25,30 @@ The server for DevSolutions website and services
 ### secure cookie unavailable over http on safari ###
 
 ## TODO ##
+- [ ] Admin page
+  - [ ] FAQ Edit only for Admins
+  - [ ] Products edit
+  - [ ] View all users / mods / admin
+    - [ ] Revoke mods status
+  - [ ] Update Orders status
+
+- [ ] Payment possible
+- [ ] Update payment status automatically
+
 - [x] FAQ Controller
 - [ ] FAQ Error handling
-- [ ] FAQ Edit only for Admins
-- [ ] Make proper security/token checks
 
+- [x] Make proper security/token checks
+
+- [ ] Product design improvements
+- [ ] View specific product
 - [ ] Product error handling
-- [ ] Products edit
 
-- [ ] Order creation
+- [x] Order creation
 - [ ] UserOrder appropriately
-- [ ] Order statuses
 
 - [x] Add token checks for some endpoints
 - [x] Properly pass token
 - [x] Add accounts sql file and db
 
-- [ ] Add orders possible
-- [ ] Make orderUser table
+- [x] Log out
