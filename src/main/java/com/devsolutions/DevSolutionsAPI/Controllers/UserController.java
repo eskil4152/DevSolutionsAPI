@@ -12,14 +12,12 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.Optional;
 
 @RestController
+@RequestMapping("/api")
 public class UserController {
     private final UserService userService;
     private final CheckCookie checkCookie;
@@ -30,7 +28,7 @@ public class UserController {
         this.checkCookie = new CheckCookie(userService);
     }
 
-    @PostMapping("/api/login")
+    @PostMapping("/login")
     public ResponseEntity<String> login(@RequestBody LoginRequest loginRequest, HttpServletResponse response){
         String username = loginRequest.getUsername();
         String password = loginRequest.getPassword();
@@ -53,7 +51,7 @@ public class UserController {
         return ResponseEntity.ok("Logged in " + username);
     }
 
-    @PostMapping("/api/register")
+    @PostMapping("/register")
     public ResponseEntity<String> register(@RequestBody LoginRequest loginRequest, HttpServletResponse response){
         String firstname = loginRequest.getFirstname();
         String lastname = loginRequest.getLastname();
@@ -78,7 +76,7 @@ public class UserController {
         return ResponseEntity.ok("Registered " + username);
     }
 
-    @GetMapping("/api/logout")
+    @GetMapping("/logout")
     public ResponseEntity<String> logout(HttpServletResponse response){
         Cookie cookie = new Cookie("Authentication", null);
         cookie.setPath("/");
@@ -90,7 +88,7 @@ public class UserController {
         return ResponseEntity.ok().body("Logged out");
     }
 
-    @GetMapping("/api/user")
+    @GetMapping("/user")
     public ResponseEntity<Optional<UserCompact>> getUser(HttpServletRequest request){
         Optional<Users> user = checkCookie.CheckCookieForUser(request);
 

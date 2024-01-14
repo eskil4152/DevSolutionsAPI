@@ -10,6 +10,7 @@ import java.util.List;
 import java.util.Optional;
 
 @RestController
+@RequestMapping("/api/products")
 public class ProductController {
 
     private final ProductService productService;
@@ -20,12 +21,12 @@ public class ProductController {
     }
 
 
-    @GetMapping("/api/product/all")
+    @GetMapping("/all")
     public ResponseEntity<List<Products>> getAllProducts(){
         return ResponseEntity.ok(productService.getAllProducts());
     }
 
-    @GetMapping("/api/product/{id}")
+    @GetMapping("/{id}")
     public ResponseEntity<Optional<Products>> getProduct(@PathVariable long id) {
         var response = productService.getProduct(id);
 
@@ -36,17 +37,17 @@ public class ProductController {
         }
     }
 
-    @PostMapping("/api/product/new")
+    @PostMapping("/new")
     public ResponseEntity<Products> addProduct(){
         return ResponseEntity.ok(new Products());
     }
 
-    @PostMapping("/api/product/delete/{id}")
+    @PostMapping("/delete/{id}")
     public ResponseEntity<String> deleteProduct(){
         return ResponseEntity.ok("");
     }
 
-    @PutMapping("/api/product/update/{id}")
+    @PutMapping("/update/{id}")
     public ResponseEntity<Products> updateProduct(){
         return ResponseEntity.ok(new Products());
     }
