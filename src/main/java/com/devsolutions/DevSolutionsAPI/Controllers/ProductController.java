@@ -7,8 +7,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 
 @RestController
+@RequestMapping("/api/products")
 public class ProductController {
 
     private final ProductService productService;
@@ -19,34 +21,33 @@ public class ProductController {
     }
 
 
-    @GetMapping("/api/product/all")
+    @GetMapping("/all")
     public ResponseEntity<List<Products>> getAllProducts(){
         return ResponseEntity.ok(productService.getAllProducts());
     }
 
-    @GetMapping("/api/product/{id}")
-    public ResponseEntity<List<Products>> getProduct(@PathVariable long id) {
+    @GetMapping("/{id}")
+    public ResponseEntity<Optional<Products>> getProduct(@PathVariable long id) {
         var response = productService.getProduct(id);
 
         if (response.isPresent()) {
-            List<Products> productList = List.of(response.get());
-            return ResponseEntity.ok(productList);
+            return ResponseEntity.ok(response);
         } else {
-            return ResponseEntity.notFound().build();
+            return ResponseEntity.status(404).body(Optional.empty());
         }
     }
 
-    @PostMapping("/api/product/new")
+    @PostMapping("/new")
     public ResponseEntity<Products> addProduct(){
         return ResponseEntity.ok(new Products());
     }
 
-    @PostMapping("/api/product/delete/{id}")
+    @PostMapping("/delete/{id}")
     public ResponseEntity<String> deleteProduct(){
         return ResponseEntity.ok("");
     }
 
-    @PutMapping("/api/product/update/{id}")
+    @PutMapping("/update/{id}")
     public ResponseEntity<Products> updateProduct(){
         return ResponseEntity.ok(new Products());
     }

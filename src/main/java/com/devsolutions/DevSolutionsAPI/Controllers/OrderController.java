@@ -9,15 +9,13 @@ import com.devsolutions.DevSolutionsAPI.Services.UserService;
 import com.devsolutions.DevSolutionsAPI.Tools.CheckCookie;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Optional;
 
 @RestController
+@RequestMapping("/api/order")
 public class OrderController {
 
     private final OrderService orderService;
@@ -32,7 +30,7 @@ public class OrderController {
         this.checkCookie = new CheckCookie(userService);
     }
 
-    @PostMapping("/api/order/new")
+    @PostMapping("/new")
     public ResponseEntity<Optional<Orders>> createNewOrder(@RequestBody OrderRequest orderRequest, HttpServletRequest request){
         Optional<Users> user = checkCookie.CheckCookieForUser(request);
 
@@ -48,7 +46,7 @@ public class OrderController {
         return ResponseEntity.ok(order);
     }
 
-    @GetMapping("/api/order/all")
+    @GetMapping("/all")
     public ResponseEntity<Optional<List<Orders>>> fetchOrderByUser(HttpServletRequest request){
         Optional<Users> users = checkCookie.CheckCookieForUser(request);
 
@@ -60,22 +58,22 @@ public class OrderController {
         return ResponseEntity.ok(Optional.ofNullable(orders));
     }
 
-    @GetMapping("/api/order/{id}")
+    @GetMapping("/{id}")
     public ResponseEntity<String> getOneOrder(){
         return ResponseEntity.status(501).body("NOT IMPLEMENTED");
     }
 
-    @GetMapping("/api/order/update/{id}")
+    @GetMapping("/update/{id}")
     public ResponseEntity<String> updateOrder(){
         return ResponseEntity.status(501).body("NOT IMPLEMENTED");
     }
 
-    @GetMapping("/api/order/cancel/{id}")
+    @GetMapping("/cancel/{id}")
     public ResponseEntity<String> cancelOrder(){
         return ResponseEntity.status(501).body("NOT IMPLEMENTED");
     }
 
-    @GetMapping("/api/order/admin/all")
+    @GetMapping("/admin/all")
     public ResponseEntity<String> getAllOrders(){
         return ResponseEntity.status(501).body("NOT IMPLEMENTED");
     }
