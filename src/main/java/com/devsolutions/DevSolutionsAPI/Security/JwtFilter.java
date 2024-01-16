@@ -64,12 +64,8 @@ public class JwtFilter extends OncePerRequestFilter {
         Cookie[] cookies = request.getCookies();
         if (cookies != null) {
             for (Cookie cookie : cookies) {
-                if (COOKIE_NAME != null){
-                    if (COOKIE_NAME.equals(cookie.getName())) {
-                        return cookie.getValue();
-                    }
-                } else {
-                    System.out.println("ERROR: Variable COOKIE_NAME not found, or value is null");
+                if (COOKIE_NAME.equals(cookie.getName())) {
+                    return cookie.getValue();
                 }
             }
         }

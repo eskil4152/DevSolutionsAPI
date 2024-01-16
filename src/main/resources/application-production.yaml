@@ -1,0 +1,21 @@
+spring:
+  datasource:
+    url: jdbc:postgresql://google/devsolutionsdb?socketFactory=com.google.cloud.sql.postgres.SocketFactory&user=${DB_USER}&password=${DB_PASSWORD}&cloudSqlInstance=${CLOUD_SQL_INSTANCE}&useSSL=false
+  flyway:
+    baseline-on-migrate: true
+    enabled: true
+    locations: classpath:db/migration
+  jpa:
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+    database: postgresql
+    show-sql: 'true'
+    hibernate:
+      ddl-auto: none
+      naming:
+        physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
+  application:
+    name: people-server
+server:
+  port: '8080'
