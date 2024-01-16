@@ -1,5 +1,6 @@
 package com.devsolutions.DevSolutionsAPI.Security;
 
+import com.devsolutions.DevSolutionsAPI.Tools.GetVariables;
 import io.github.cdimascio.dotenv.Dotenv;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
@@ -22,11 +23,9 @@ import java.util.Collections;
 
 public class JwtFilter extends OncePerRequestFilter {
 
-    static Dotenv dotenv = Dotenv.configure().load();
-
-    private static final String SECRET = dotenv.get("JWT_SECRET");
-    private static final String COOKIE_NAME = dotenv.get("COOKIE_NAME");
-    private static final String ROLE_CLAIM = dotenv.get("ROLE_CLAIM");
+    private static final String SECRET = GetVariables.getSecret();
+    private static final String COOKIE_NAME = "Authentication";
+    private static final String ROLE_CLAIM = GetVariables.getRoleClaim();
 
     @Override
     protected void doFilterInternal(
