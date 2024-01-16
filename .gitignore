@@ -8,6 +8,7 @@ mvnw
 mvnw.cmd
 
 src/main/resources/.env
+PropertySourceConfig.java
 
 ### STS ###
 .apt_generated
