@@ -13,13 +13,15 @@ public class SecurityConfig {
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         return http
                 .authorizeHttpRequests(authorization -> authorization
-                        .requestMatchers("/api/admin/**").hasRole("ADMIN")
-                        .requestMatchers("/api/moderator/**").hasAnyRole("ADMIN", "MODERATOR")
-                        .requestMatchers("/api/orders/**").authenticated()
-                        .requestMatchers("/api/**").permitAll()
-                        .anyRequest().authenticated())
-                        .csrf().disable()
-                        .addFilterBefore(jwtFilter(), UsernamePasswordAuthenticationFilter.class)
+                    .requestMatchers("/api/admin/**").hasRole("ADMIN")
+                    .requestMatchers("/api/moderator/**").hasAnyRole("ADMIN", "MODERATOR")
+                    .requestMatchers("/api/orders/**").authenticated()
+                    .anyRequest().permitAll())
+                    .addFilterBefore(jwtFilter(), UsernamePasswordAuthenticationFilter.class)
+                .csrf().disable()
+                    /*.csrf((csrf) -> csrf
+                        .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
+                            .csrfTokenRequestHandler(new XorCsrfTokenRequestAttributeHandler()))*/
                 .build();
     }
 
