@@ -1,6 +1,6 @@
 spring:
   datasource:
-    url: jdbc:postgresql://google/devsolutionsdb?socketFactory=com.google.cloud.sql.postgres.SocketFactory&user=${DB_USER}&password=${DB_PASSWORD}&cloudSqlInstance=${CLOUD_SQL_INSTANCE}&useSSL=false
+    url: jdbc:postgresql://google/devsolutionsdb?socketFactory=com.google.cloud.sql.postgres.SocketFactory&cloudSqlInstance=${CLOUD_SQL_INSTANCE}&user=${DB_USER}&password=${DB_PASSWORD}&useSSL=false
   flyway:
     baseline-on-migrate: true
     enabled: true
