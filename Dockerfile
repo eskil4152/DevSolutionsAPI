@@ -5,7 +5,7 @@ COPY . .
 RUN mvn clean package
 
 # Stage 2: Production Stage
-FROM adoptopenjdk:17-jdk-alpine
+FROM openjdk:17-jdk-slim
 WORKDIR /app
 COPY --from=builder /app/target/DevSolutionsAPI-0.0.1-SNAPSHOT.jar .
 EXPOSE 8080
