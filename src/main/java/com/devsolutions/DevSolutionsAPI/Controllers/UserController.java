@@ -46,6 +46,7 @@ public class UserController {
         cookie.setSecure(true);
         cookie.setHttpOnly(true);
         cookie.setMaxAge(3600);
+        cookie.setAttribute("SameSite", "None");
         response.addCookie(cookie);
 
         System.out.println("COOKIE: " + cookie);
