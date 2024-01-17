@@ -19,11 +19,10 @@ import java.util.Collection;
 import java.util.Collections;
 
 public class JwtFilter extends OncePerRequestFilter {
-
     private static final String SECRET = GetVariables.getSecret();
     private static final String HEADER_NAME = "Authorization";
     private static final String TOKEN_PREFIX = "Bearer ";
-    private static final String ROLE_CLAIM = GetVariables.getRoleClaim();
+    private static final String ROLE_CLAIM = "role";
 
     @Override
     protected void doFilterInternal(
@@ -31,6 +30,7 @@ public class JwtFilter extends OncePerRequestFilter {
             @NotNull HttpServletResponse response,
             @NotNull FilterChain filterChain) throws ServletException, IOException {
         try {
+            System.out.println("SECRET: " + SECRET);
             String jwt = extractJwtFromRequest(request);
 
             if (jwt != null && Jwts.parser().setSigningKey(SECRET).isSigned(jwt)) {

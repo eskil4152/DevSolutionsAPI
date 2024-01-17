@@ -21,9 +21,4 @@ public class GetVariables {
         String secret = System.getenv("JWT_SECRET");
         return (secret != null) ? secret : (isLocal ? dotenv.get("JWT_SECRET") : null);
     }
-
-    public static String getRoleClaim() {
-        String roleClaim = System.getenv("ROLE_CLAIM");
-        return (roleClaim != null) ? roleClaim : (isLocal ? dotenv.get("ROLE_CLAIM") : null);
-    }
 }
