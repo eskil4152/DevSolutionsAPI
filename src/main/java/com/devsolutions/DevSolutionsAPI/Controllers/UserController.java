@@ -48,6 +48,9 @@ public class UserController {
         cookie.setMaxAge(3600);
         response.addCookie(cookie);
 
+        response.addHeader("Access-Control-Allow-Origin", "https://client-aste32wdra-nw.a.run.app");
+        response.addHeader("Access-Control-Allow-Headers", "*");
+
         System.out.println("COOKIE: " + cookie);
 
         return ResponseEntity.ok("Logged in " + username);
