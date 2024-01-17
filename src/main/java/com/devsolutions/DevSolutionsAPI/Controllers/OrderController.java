@@ -6,7 +6,7 @@ import com.devsolutions.DevSolutionsAPI.RequestBodies.OrderRequest;
 import com.devsolutions.DevSolutionsAPI.Services.OrderService;
 import com.devsolutions.DevSolutionsAPI.Services.UserOrderService;
 import com.devsolutions.DevSolutionsAPI.Services.UserService;
-import com.devsolutions.DevSolutionsAPI.Tools.CheckCookie;
+import com.devsolutions.DevSolutionsAPI.Tools.CheckJwt;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -21,18 +21,18 @@ public class OrderController {
     private final OrderService orderService;
     private final UserOrderService userOrderService;
     private final UserService userService;
-    private final CheckCookie checkCookie;
+    private final CheckJwt checkJwt;
 
     public OrderController(OrderService orderService, UserOrderService userOrderService, UserService userService){
         this.orderService = orderService;
         this.userOrderService = userOrderService;
         this.userService = userService;
-        this.checkCookie = new CheckCookie(userService);
+        this.checkJwt = new CheckJwt(userService);
     }
 
     @PostMapping("/new")
     public ResponseEntity<Optional<Orders>> createNewOrder(@RequestBody OrderRequest orderRequest, HttpServletRequest request){
-        Optional<Users> user = checkCookie.CheckCookieForUser(request);
+        Optional<Users> user = checkJwt.checkJwtForUser(request);
 
         if (user.isEmpty()){
             return ResponseEntity.status(401).build();
@@ -48,7 +48,7 @@ public class OrderController {
 
     @GetMapping("/all")
     public ResponseEntity<Optional<List<Orders>>> fetchOrderByUser(HttpServletRequest request){
-        Optional<Users> users = checkCookie.CheckCookieForUser(request);
+        Optional<Users> users = checkJwt.checkJwtForUser(request);
 
         if (users.isEmpty())
             return ResponseEntity.status(401).body(Optional.empty());

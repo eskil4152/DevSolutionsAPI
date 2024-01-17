@@ -6,7 +6,7 @@ import com.devsolutions.DevSolutionsAPI.Enums.UserRole;
 import com.devsolutions.DevSolutionsAPI.Security.JwtUtil;
 import com.devsolutions.DevSolutionsAPI.RequestBodies.LoginRequest;
 import com.devsolutions.DevSolutionsAPI.Services.UserService;
-import com.devsolutions.DevSolutionsAPI.Tools.CheckCookie;
+import com.devsolutions.DevSolutionsAPI.Tools.CheckJwt;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -20,12 +20,12 @@ import java.util.Optional;
 @RequestMapping("/api")
 public class UserController {
     private final UserService userService;
-    private final CheckCookie checkCookie;
+    private final CheckJwt checkJwt;
 
     @Autowired
     public UserController(UserService userService){
         this.userService = userService;
-        this.checkCookie = new CheckCookie(userService);
+        this.checkJwt = new CheckJwt(userService);
     }
 
     @PostMapping("/login")
@@ -41,14 +41,7 @@ public class UserController {
         UserRole role = user.get().getRole();
         String token = JwtUtil.generateToken(username, role);
 
-        Cookie cookie = new Cookie("Authentication", token);
-        cookie.setPath("/");
-        cookie.setSecure(true);
-        cookie.setMaxAge(3600);
-        cookie.setAttribute("SameSite", "None");
-        response.addCookie(cookie);
-
-        System.out.println("COOKIE: " + cookie);
+        response.addHeader("Authorization", "Bearer " + token);
 
         return ResponseEntity.ok("Logged in " + username);
     }
@@ -68,12 +61,7 @@ public class UserController {
 
         String token = JwtUtil.generateToken(username, UserRole.USER);
 
-        Cookie cookie = new Cookie("Authentication", token);
-        cookie.setPath("/");
-        cookie.setSecure(false);
-        cookie.setHttpOnly(true);
-        cookie.setMaxAge(3600);
-        response.addCookie(cookie);
+        response.addHeader("Authorization", "Bearer " + token);
 
         return ResponseEntity.ok("Registered " + username);
     }
@@ -92,7 +80,7 @@ public class UserController {
 
     @GetMapping("/user")
     public ResponseEntity<Optional<UserCompact>> getUser(HttpServletRequest request){
-        Optional<Users> user = checkCookie.CheckCookieForUser(request);
+        Optional<Users> user = checkJwt.checkJwtForUser(request);
 
         if (user.isEmpty())
             return ResponseEntity.status(401).build();
