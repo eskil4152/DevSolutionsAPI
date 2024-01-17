@@ -13,8 +13,8 @@ public class SecurityConfig {
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         return http
                 .authorizeHttpRequests(authorization -> authorization
-                    .requestMatchers("/api/admin/**").hasRole("ADMIN")
-                    .requestMatchers("/api/moderator/**").hasAnyRole("ADMIN", "MODERATOR")
+                    .requestMatchers("/api/admin/**").hasAnyRole("OWNER", "ADMIN")
+                    .requestMatchers("/api/moderator/**").hasAnyRole("OWNER", "ADMIN", "MODERATOR")
                     .requestMatchers("/api/orders/**").authenticated()
                     .anyRequest().permitAll())
                     .addFilterBefore(jwtFilter(), UsernamePasswordAuthenticationFilter.class)

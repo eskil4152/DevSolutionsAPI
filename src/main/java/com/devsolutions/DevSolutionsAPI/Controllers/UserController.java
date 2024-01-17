@@ -43,7 +43,7 @@ public class UserController {
 
         Cookie cookie = new Cookie("Authentication", token);
         cookie.setPath("/");
-        cookie.setSecure(false);
+        cookie.setSecure(true);
         cookie.setHttpOnly(true);
         cookie.setMaxAge(3600);
         response.addCookie(cookie);
