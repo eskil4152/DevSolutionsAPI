@@ -48,8 +48,6 @@ public class UserController {
         cookie.setMaxAge(3600);
         response.addCookie(cookie);
 
-        response.addHeader("Access-Control-Allow-Credentials", "true");
-
         System.out.println("COOKIE: " + cookie);
 
         return ResponseEntity.ok("Logged in " + username);
