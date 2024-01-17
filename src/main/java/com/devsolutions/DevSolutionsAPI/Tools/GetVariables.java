@@ -3,8 +3,10 @@ package com.devsolutions.DevSolutionsAPI.Tools;
 import io.github.cdimascio.dotenv.Dotenv;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.DependsOn;
 
 @Configuration
+@DependsOn({"getEnvProfile"})
 public class GetVariables {
     private static boolean isLocal;
     private static Dotenv dotenv;
@@ -16,7 +18,6 @@ public class GetVariables {
     }
 
     public static String getSecret() {
-        System.out.println("IS LOCAL: " + isLocal);
         String secret = System.getenv("JWT_SECRET");
         return (secret != null) ? secret : (isLocal ? dotenv.get("JWT_SECRET") : null);
     }

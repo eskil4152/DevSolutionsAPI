@@ -1,5 +1,8 @@
 package com.devsolutions.DevSolutionsAPI.Tools;
 
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.DependsOn;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
 
@@ -15,7 +18,6 @@ public class GetEnvProfile {
     }
 
     public Collection<String> getProfiles() {
-        System.out.println("ACTIVE PROFILES: " + Arrays.toString(environment.getActiveProfiles()));
         return Arrays.asList(environment.getActiveProfiles());
     }
 }
