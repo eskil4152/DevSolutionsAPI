@@ -7,6 +7,7 @@ import io.jsonwebtoken.Jwts;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.jetbrains.annotations.NotNull;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -19,7 +20,7 @@ import java.util.Collection;
 import java.util.Collections;
 
 public class JwtFilter extends OncePerRequestFilter {
-    private static final String SECRET = GetVariables.getSecret();
+    private static String SECRET;
     private static final String HEADER_NAME = "Authorization";
     private static final String TOKEN_PREFIX = "Bearer ";
     private static final String ROLE_CLAIM = "role";
@@ -30,7 +31,9 @@ public class JwtFilter extends OncePerRequestFilter {
             @NotNull HttpServletResponse response,
             @NotNull FilterChain filterChain) throws ServletException, IOException {
         try {
-            System.out.println("SECRET: " + SECRET);
+            if (SECRET == null)
+                SECRET = GetVariables.getSecret();
+
             String jwt = extractJwtFromRequest(request);
 
             if (jwt != null && Jwts.parser().setSigningKey(SECRET).isSigned(jwt)) {

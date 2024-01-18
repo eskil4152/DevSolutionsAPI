@@ -15,7 +15,6 @@ public class JwtUtil {
     private static final String ROLE_CLAIM = "role";
 
     public static String generateToken(String username, UserRole role) {
-        System.out.println("SECRET UTIL: " + SECRET);
         return Jwts.builder()
                 .setSubject(username)
                 .claim(ROLE_CLAIM, role)
