@@ -20,9 +20,10 @@ public class SecurityConfig {
                     .requestMatchers("/api/user/**").authenticated()
                     .anyRequest().permitAll())
                     .addFilterBefore(jwtFilter(), UsernamePasswordAuthenticationFilter.class)
-                    .csrf((csrf) -> csrf
+                .csrf().disable()
+                    /*.csrf((csrf) -> csrf
                         .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
-                            .csrfTokenRequestHandler(new XorCsrfTokenRequestAttributeHandler()))
+                            .csrfTokenRequestHandler(new XorCsrfTokenRequestAttributeHandler()))*/
                 .build();
     }
 

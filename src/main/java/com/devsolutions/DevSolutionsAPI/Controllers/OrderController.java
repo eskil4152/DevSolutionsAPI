@@ -62,7 +62,7 @@ public class OrderController {
 
     // Gets order by id, checks if user exists, if order exists, and if order is made by the user
     @GetMapping("/{id}")
-    public ResponseEntity<Optional<Orders>> getOneOrder(@RequestParam Long id, HttpServletRequest request){
+    public ResponseEntity<Optional<Orders>> getOneOrder(@PathVariable Long id, HttpServletRequest request){
         Optional<Users> user = checkJwt.checkJwtForUser(request);
 
         if (user.isEmpty())
