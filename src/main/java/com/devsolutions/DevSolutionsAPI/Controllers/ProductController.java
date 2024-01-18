@@ -36,19 +36,4 @@ public class ProductController {
             return ResponseEntity.status(404).body(Optional.empty());
         }
     }
-
-    @PostMapping("/new")
-    public ResponseEntity<Products> addProduct(){
-        return ResponseEntity.ok(new Products());
-    }
-
-    @PostMapping("/delete/{id}")
-    public ResponseEntity<String> deleteProduct(){
-        return ResponseEntity.ok("");
-    }
-
-    @PutMapping("/update/{id}")
-    public ResponseEntity<Products> updateProduct(){
-        return ResponseEntity.ok(new Products());
-    }
 }

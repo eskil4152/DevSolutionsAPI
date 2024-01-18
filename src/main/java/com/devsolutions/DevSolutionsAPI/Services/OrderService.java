@@ -48,11 +48,11 @@ public class OrderService {
         return Optional.of(order);
     }
 
-    public void getAllOrders(){
-        return;
+    public Optional<Orders> getOrderById(Long id){
+        return orderRepository.findById(id);
     }
 
-    public List<Orders> getOrder(Users user){
+    public List<Orders> getOrders(Users user){
         return orderRepository.findByUser(user);
     }
 
