@@ -11,7 +11,7 @@ import java.util.Date;
 
 public class JwtUtil {
     private static final String SECRET = GetVariables.getSecret();
-    private static final long EXPIRATION_TIME = 3_600_000; // 24 hours
+    private static final long EXPIRATION_TIME = 3_600_000; // 1 hour (ms)
     private static final String ROLE_CLAIM = "role";
 
     public static String generateToken(String username, UserRole role) {

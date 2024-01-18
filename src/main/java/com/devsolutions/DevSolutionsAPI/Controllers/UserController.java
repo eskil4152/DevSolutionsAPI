@@ -66,18 +66,6 @@ public class UserController {
         return ResponseEntity.ok("Registered " + username);
     }
 
-    @GetMapping("/logout")
-    public ResponseEntity<String> logout(HttpServletResponse response){
-        Cookie cookie = new Cookie("Authentication", null);
-        cookie.setPath("/");
-        cookie.setSecure(false);
-        cookie.setHttpOnly(true);
-        cookie.setMaxAge(0);
-        response.addCookie(cookie);
-
-        return ResponseEntity.ok().body("Logged out");
-    }
-
     @GetMapping("/user")
     public ResponseEntity<Optional<UserCompact>> getUser(HttpServletRequest request){
         Optional<Users> user = checkJwt.checkJwtForUser(request);
