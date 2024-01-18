@@ -27,7 +27,7 @@ public class ProductController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Optional<Products>> getProduct(@PathVariable long id) {
+    public ResponseEntity<Optional<Products>> getProduct(@PathVariable Long id) {
         var response = productService.getProduct(id);
 
         if (response.isPresent()) {
