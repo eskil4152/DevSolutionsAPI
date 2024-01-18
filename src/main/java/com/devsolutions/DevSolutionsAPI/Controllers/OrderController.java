@@ -30,6 +30,7 @@ public class OrderController {
         this.checkJwt = new CheckJwt(userService);
     }
 
+    // Makes a new order, provided user and product is provided and exists
     @PostMapping("/new")
     public ResponseEntity<Optional<Orders>> createNewOrder(@RequestBody OrderRequest orderRequest, HttpServletRequest request){
         Optional<Users> user = checkJwt.checkJwtForUser(request);
@@ -46,6 +47,7 @@ public class OrderController {
         return ResponseEntity.ok(order);
     }
 
+    // Gets all orders a user has made
     @GetMapping("/all")
     public ResponseEntity<Optional<List<Orders>>> fetchOrderByUser(HttpServletRequest request){
         Optional<Users> users = checkJwt.checkJwtForUser(request);
@@ -53,28 +55,27 @@ public class OrderController {
         if (users.isEmpty())
             return ResponseEntity.status(401).body(Optional.empty());
 
-        List<Orders> orders = orderService.getOrder(users.get());
+        List<Orders> orders = orderService.getOrders(users.get());
 
         return ResponseEntity.ok(Optional.ofNullable(orders));
     }
 
+    // Gets order by id, checks if user exists, if order exists, and if order is made by the user
     @GetMapping("/{id}")
-    public ResponseEntity<String> getOneOrder(){
-        return ResponseEntity.status(501).body("NOT IMPLEMENTED");
-    }
+    public ResponseEntity<Optional<Orders>> getOneOrder(@RequestParam Long id, HttpServletRequest request){
+        Optional<Users> user = checkJwt.checkJwtForUser(request);
 
-    @GetMapping("/update/{id}")
-    public ResponseEntity<String> updateOrder(){
-        return ResponseEntity.status(501).body("NOT IMPLEMENTED");
-    }
+        if (user.isEmpty())
+            return ResponseEntity.status(401).body(Optional.empty());
 
-    @GetMapping("/cancel/{id}")
-    public ResponseEntity<String> cancelOrder(){
-        return ResponseEntity.status(501).body("NOT IMPLEMENTED");
-    }
+        Optional<Orders> order = orderService.getOrderById(id);
 
-    @GetMapping("/admin/all")
-    public ResponseEntity<String> getAllOrders(){
-        return ResponseEntity.status(501).body("NOT IMPLEMENTED");
+        if (order.isEmpty())
+            return ResponseEntity.status(404).body(Optional.empty());
+
+        if (user.get() != order.get().getUser())
+            return ResponseEntity.status(401).body(Optional.empty());
+
+        return ResponseEntity.ok(order);
     }
 }

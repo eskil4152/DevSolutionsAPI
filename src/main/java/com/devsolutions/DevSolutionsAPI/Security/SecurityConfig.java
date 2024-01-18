@@ -5,6 +5,8 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
+import org.springframework.security.web.csrf.XorCsrfTokenRequestAttributeHandler;
 
 @Configuration
 public class SecurityConfig {
@@ -15,13 +17,12 @@ public class SecurityConfig {
                 .authorizeHttpRequests(authorization -> authorization
                     .requestMatchers("/api/admin/**").hasAnyRole("OWNER", "ADMIN")
                     .requestMatchers("/api/moderator/**").hasAnyRole("OWNER", "ADMIN", "MODERATOR")
-                    .requestMatchers("/api/orders/**").authenticated()
+                    .requestMatchers("/api/user/**").authenticated()
                     .anyRequest().permitAll())
                     .addFilterBefore(jwtFilter(), UsernamePasswordAuthenticationFilter.class)
-                .csrf().disable()
-                    /*.csrf((csrf) -> csrf
+                    .csrf((csrf) -> csrf
                         .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
-                            .csrfTokenRequestHandler(new XorCsrfTokenRequestAttributeHandler()))*/
+                            .csrfTokenRequestHandler(new XorCsrfTokenRequestAttributeHandler()))
                 .build();
     }
 
