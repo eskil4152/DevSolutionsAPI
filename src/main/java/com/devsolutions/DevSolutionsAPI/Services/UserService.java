@@ -1,11 +1,13 @@
 package com.devsolutions.DevSolutionsAPI.Services;
 
 import com.devsolutions.DevSolutionsAPI.Entities.Users;
+import com.devsolutions.DevSolutionsAPI.Enums.UserRole;
 import com.devsolutions.DevSolutionsAPI.Security.PasswordEncoder;
 import com.devsolutions.DevSolutionsAPI.Repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -51,4 +53,11 @@ public class UserService {
         return userRepository.findByUsername(username);
     }
 
+    public Optional<List<Users>> getAllUsers(){
+        return userRepository.findAllByRole(UserRole.USER);
+    }
+
+    public Optional<List<Users>> getAllModerators(){
+        return userRepository.findAllByRole(UserRole.MODERATOR);
+    }
 }

@@ -35,9 +35,13 @@ The server for DevSolutions website and services
     - [ ] View all orders
     - [ ] Update orders
     - [ ] Cancel orders
-    - [ ] 
-  - [ ] View all users / mods / admin
-    - [ ] Revoke mods status
+  - [ ] View all users / mods
+    - [x] View all users
+    - [x] View all moderators
+    - [ ] Grant moderator status
+    - [ ] Revoke moderator status
+    - [ ] Grand admin status
+    - [ ] Revoke admin status
   - [ ] Update Orders status
 
 - [x] FAQ Controller
