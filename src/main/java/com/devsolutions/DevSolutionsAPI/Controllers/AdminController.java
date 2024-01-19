@@ -1,8 +1,10 @@
 package com.devsolutions.DevSolutionsAPI.Controllers;
 
+import com.devsolutions.DevSolutionsAPI.Entities.Orders;
 import com.devsolutions.DevSolutionsAPI.Entities.Products;
 import com.devsolutions.DevSolutionsAPI.Entities.Users;
 import com.devsolutions.DevSolutionsAPI.Enums.UserRole;
+import com.devsolutions.DevSolutionsAPI.Services.OrderService;
 import com.devsolutions.DevSolutionsAPI.Services.UserService;
 import com.devsolutions.DevSolutionsAPI.Tools.CheckJwt;
 import jakarta.servlet.http.HttpServletRequest;
@@ -17,11 +19,15 @@ import java.util.Optional;
 @RequestMapping("/api")
 public class AdminController {
     private final UserService userService;
+    private final OrderService orderService;
+
     private final CheckJwt checkJwt;
 
     @Autowired
-    public AdminController(UserService userService){
+    public AdminController(UserService userService, OrderService orderService){
         this.userService = userService;
+        this.orderService = orderService;
+
         this.checkJwt = new CheckJwt(userService);
     }
 
@@ -37,8 +43,13 @@ public class AdminController {
     }
 
     @GetMapping("/admin/order/all")
-    public ResponseEntity<String> getAllOrders(){
-        return ResponseEntity.status(501).body("NOT IMPLEMENTED");
+    public ResponseEntity<Optional<List<Orders>>> getAllOrders(HttpServletRequest request){
+        Optional<Users> user = checkJwt.checkJwtForUser(request);
+
+        if (user.isEmpty() || user.get().getRole() != UserRole.ADMIN)
+            return ResponseEntity.status(401).body(Optional.empty());
+
+        return ResponseEntity.ok(Optional.of(orderService.getAllOrders()));
     }
 
     // Products
