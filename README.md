@@ -23,6 +23,7 @@ The server for DevSolutions website and services
 * PaymentController - Handles the payment, most likely via 3rd party
 
 ## TODO ##
+- [ ] Admin > viewAll -> Pageable
 - [ ] Admin controller
   - [ ] FAQ
     - [ ] Add
@@ -35,9 +36,13 @@ The server for DevSolutions website and services
     - [ ] View all orders
     - [ ] Update orders
     - [ ] Cancel orders
-    - [ ] 
-  - [ ] View all users / mods / admin
-    - [ ] Revoke mods status
+  - [ ] View all users / mods
+    - [x] View all users
+    - [x] View all moderators
+    - [ ] Grant moderator status
+    - [ ] Revoke moderator status
+    - [ ] Grand admin status
+    - [ ] Revoke admin status
   - [ ] Update Orders status
 
 - [x] FAQ Controller
