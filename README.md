@@ -23,15 +23,19 @@ The server for DevSolutions website and services
 * PaymentController - Handles the payment, most likely via 3rd party
 
 ## TODO ##
+
+- [ ] Code cleanup by removing auth checks? SecConfig handles anyway
+
 - [ ] Admin > viewAll -> Pageable
 - [ ] Admin controller
   - [ ] FAQ
     - [ ] Add
     - [ ] Remove
   - [ ] Products edit
-    - [ ] Add products
-    - [ ] Edit products
-    - [ ] Remove products
+    - [x] Add products
+    - [x] Edit products
+    - [x] Remove products
+    - [ ] Update for better efficiency and cost
   - [ ] Orders
     - [ ] View all orders
     - [ ] Update orders
