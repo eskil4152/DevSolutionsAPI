@@ -25,6 +25,8 @@ public class JwtFilter extends OncePerRequestFilter {
     private static final String TOKEN_PREFIX = "Bearer ";
     private static final String ROLE_CLAIM = "role";
 
+    private static final String COOKIE_NAME = "AuthCookie";
+
     @Override
     protected void doFilterInternal(
             @NotNull HttpServletRequest request,

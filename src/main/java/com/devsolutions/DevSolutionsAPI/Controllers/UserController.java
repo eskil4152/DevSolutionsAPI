@@ -6,6 +6,7 @@ import com.devsolutions.DevSolutionsAPI.Enums.UserRole;
 import com.devsolutions.DevSolutionsAPI.Security.JwtUtil;
 import com.devsolutions.DevSolutionsAPI.RequestBodies.LoginRequest;
 import com.devsolutions.DevSolutionsAPI.Services.UserService;
+import com.devsolutions.DevSolutionsAPI.Tools.CheckCookie;
 import com.devsolutions.DevSolutionsAPI.Tools.CheckJwt;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
@@ -20,34 +21,46 @@ import java.util.Optional;
 @RequestMapping("/api")
 public class UserController {
     private final UserService userService;
+    private final CheckCookie checkCookie;
     private final CheckJwt checkJwt;
 
     @Autowired
     public UserController(UserService userService){
         this.userService = userService;
         this.checkJwt = new CheckJwt(userService);
+
+        this.checkCookie = new CheckCookie(userService);
     }
 
     @PostMapping("/login")
-    public ResponseEntity<String> login(@RequestBody LoginRequest loginRequest, HttpServletResponse response){
+    public ResponseEntity<Optional<UserRole>> login(@RequestBody LoginRequest loginRequest, HttpServletResponse response){
         String username = loginRequest.getUsername();
         String password = loginRequest.getPassword();
 
         var user = userService.login(username, password);
 
         if (user.isEmpty())
-            return ResponseEntity.status(401).body("No user matching credentials");
+            return ResponseEntity.status(401).body(Optional.empty());
 
         UserRole role = user.get().getRole();
         String token = JwtUtil.generateToken(username, role);
 
         response.addHeader("Authorization", "Bearer " + token);
 
-        return ResponseEntity.ok("Logged in " + username);
+        Cookie cookie = new Cookie("AuthCookie", token);
+        cookie.setPath("/");
+        cookie.setMaxAge(3600);
+
+        cookie.setSecure(false);
+        cookie.setHttpOnly(false);
+
+        response.addCookie(cookie);
+
+        return ResponseEntity.ok(Optional.of(role));
     }
 
     @PostMapping("/register")
-    public ResponseEntity<String> register(@RequestBody LoginRequest loginRequest, HttpServletResponse response){
+    public ResponseEntity<Optional<UserRole>> register(@RequestBody LoginRequest loginRequest, HttpServletResponse response){
         String firstname = loginRequest.getFirstname();
         String lastname = loginRequest.getLastname();
         String username = loginRequest.getUsername();
@@ -57,13 +70,22 @@ public class UserController {
         var user = userService.register(firstname, lastname, username, password, email);
 
         if (user.isEmpty())
-            return ResponseEntity.status(409).body("Username already registered");
+            return ResponseEntity.status(409).body(Optional.empty());
 
         String token = JwtUtil.generateToken(username, UserRole.USER);
 
         response.addHeader("Authorization", "Bearer " + token);
 
-        return ResponseEntity.ok("Registered " + username);
+        Cookie cookie = new Cookie("AuthCookie", token);
+        cookie.setPath("/");
+        cookie.setMaxAge(3600);
+
+        cookie.setSecure(false);
+        cookie.setHttpOnly(false);
+
+        response.addCookie(cookie);
+
+        return ResponseEntity.ok(Optional.of(UserRole.USER));
     }
 
     @GetMapping("/user")
