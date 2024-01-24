@@ -50,9 +50,10 @@ public class UserController {
         Cookie cookie = new Cookie("AuthCookie", token);
         cookie.setPath("/");
         cookie.setMaxAge(3600);
-
-        cookie.setSecure(false);
-        cookie.setHttpOnly(false);
+        cookie.setDomain(".a.run.app");
+        cookie.setSecure(true);
+        cookie.setHttpOnly(true);
+        cookie.setAttribute("SameSite", "Strict");
 
         response.addCookie(cookie);
 
@@ -80,8 +81,8 @@ public class UserController {
         cookie.setPath("/");
         cookie.setMaxAge(3600);
 
-        cookie.setSecure(false);
-        cookie.setHttpOnly(false);
+        cookie.setSecure(true);
+        cookie.setHttpOnly(true);
 
         response.addCookie(cookie);
 
