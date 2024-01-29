@@ -30,13 +30,17 @@ public class ProductService {
     public Optional<Products> saveProduct(ProductsRequest request){
         Products products = new Products(request.getProductName(), request.getDescription(), request.getPrice());
 
-        if (productRepository.findByName(products.getName()).isEmpty()) {
+        if (productRepository.findByName(products.getName()).isPresent()) {
             return Optional.empty();
         }
 
         productRepository.save(products);
 
         return Optional.of(products);
+    }
+
+    public Optional<Products> getProductByName(String name){
+        return productRepository.findByName(name);
     }
 
     public Optional<Products> updateProduct(ProductsRequest request) {
@@ -51,9 +55,8 @@ public class ProductService {
         return dbProduct;
     }
 
-    public boolean deleteProduct(ProductsRequest request){
-        Products products = new Products(request.getProductName(), request.getDescription(), request.getPrice());
-        Optional<Products> dbProduct = productRepository.findByName(products.getName());
+    public boolean deleteProduct(Long id){
+        Optional<Products> dbProduct = productRepository.findById(id);
 
         if (dbProduct.isEmpty())
             return false;

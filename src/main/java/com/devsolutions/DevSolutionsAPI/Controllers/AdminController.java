@@ -12,6 +12,7 @@ import com.devsolutions.DevSolutionsAPI.Tools.CheckJwt;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -57,6 +58,16 @@ public class AdminController {
     }
 
     // Products
+    @GetMapping("/admin/products/all")
+    public ResponseEntity<Optional<List<Products>>> getAllProductsAdmin(HttpServletRequest request){
+        Optional<Users> user = checkJwt.checkJwtForUser(request);
+
+        if (user.isEmpty() || user.get().getRole() != UserRole.ADMIN)
+            return ResponseEntity.status(401).body(Optional.empty());
+
+        return ResponseEntity.ok(Optional.ofNullable(productService.getAllProducts()));
+    }
+
     @PostMapping("/admin/products/new")
     public ResponseEntity<Optional<Products>> addProduct(@RequestBody ProductsRequest productsRequest, HttpServletRequest request){
         Optional<Users> user = checkJwt.checkJwtForUser(request);
@@ -66,28 +77,27 @@ public class AdminController {
 
         Optional<Products> products = productService.saveProduct(productsRequest);
 
-        if (products.isEmpty())
-            return ResponseEntity.status(409).body(Optional.empty());
+        if (products.isEmpty()) return ResponseEntity.status(409).body(Optional.empty());
 
         return ResponseEntity.ok(products);
     }
 
-    @PostMapping("/admin/products/delete/{id}")
-    public ResponseEntity<?> deleteProduct(@RequestBody ProductsRequest productsRequest, HttpServletRequest request){
+    @DeleteMapping("/admin/products/delete/{id}")
+    public ResponseEntity<?> deleteProduct(@PathVariable String id, HttpServletRequest request){
         Optional<Users> user = checkJwt.checkJwtForUser(request);
 
         if (user.isEmpty() || user.get().getRole() != UserRole.ADMIN)
             return ResponseEntity.status(401).body(Optional.empty());
 
-        boolean didDelete = productService.deleteProduct(productsRequest);
+        boolean didDelete = productService.deleteProduct(Long.parseLong(id));
 
         if (!didDelete)
             return ResponseEntity.notFound().build();
-        
+
         return ResponseEntity.ok().build();
     }
 
-    @PutMapping("/admin/products/update/{id}")
+    @PutMapping("/admin/products/update")
     public ResponseEntity<Optional<Products>> updateProduct(@RequestBody ProductsRequest productsRequest, HttpServletRequest request){
         Optional<Users> user = checkJwt.checkJwtForUser(request);
 

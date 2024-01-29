@@ -37,7 +37,7 @@ The server for DevSolutions website and services
     - [x] Remove products
     - [ ] Update for better efficiency and cost
   - [ ] Orders
-    - [ ] View all orders
+    - [x] View all orders
     - [ ] Update orders
     - [ ] Cancel orders
   - [ ] View all users / mods
