@@ -2,8 +2,11 @@ package com.devsolutions.DevSolutionsAPI.Services;
 
 import com.devsolutions.DevSolutionsAPI.Entities.Users;
 import com.devsolutions.DevSolutionsAPI.Enums.UserRole;
+import com.devsolutions.DevSolutionsAPI.Enums.UserRoleChange;
+import com.devsolutions.DevSolutionsAPI.RequestBodies.RoleChangeRequest;
 import com.devsolutions.DevSolutionsAPI.Security.PasswordEncoder;
 import com.devsolutions.DevSolutionsAPI.Repositories.UserRepository;
+import com.devsolutions.DevSolutionsAPI.Tools.ChangeRole;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -59,5 +62,31 @@ public class UserService {
 
     public Optional<List<Users>> getAllModerators(){
         return userRepository.findAllByRole(UserRole.MODERATOR);
+    }
+
+    public int changeUserRole(RoleChangeRequest request) {
+        Optional<Users> userOptional = userRepository.findById(request.getId());
+
+        if (userOptional.isEmpty() || !userOptional.get().getUsername().equals(request.getUsername()))
+            return 404;
+
+        Users user = userOptional.get();
+        UserRole currentRole = user.getRole();
+        UserRoleChange change = request.getChange();
+        UserRole newRole = null;
+
+        switch (change) {
+            case PROMOTE:
+                newRole = ChangeRole.getNextHigherRole(currentRole);
+                break;
+            case DEMOTE:
+                newRole = ChangeRole.getNextLowerRole(currentRole);
+            default:
+                break;
+        }
+
+        userRepository.changeUserRole(user, newRole);
+
+        return 200;
     }
 }

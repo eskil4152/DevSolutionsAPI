@@ -4,7 +4,9 @@ import com.devsolutions.DevSolutionsAPI.Entities.Orders;
 import com.devsolutions.DevSolutionsAPI.Entities.Products;
 import com.devsolutions.DevSolutionsAPI.Entities.Users;
 import com.devsolutions.DevSolutionsAPI.Enums.UserRole;
+import com.devsolutions.DevSolutionsAPI.Enums.UserRoleChange;
 import com.devsolutions.DevSolutionsAPI.RequestBodies.ProductsRequest;
+import com.devsolutions.DevSolutionsAPI.RequestBodies.RoleChangeRequest;
 import com.devsolutions.DevSolutionsAPI.Services.OrderService;
 import com.devsolutions.DevSolutionsAPI.Services.ProductService;
 import com.devsolutions.DevSolutionsAPI.Services.UserService;
@@ -122,7 +124,6 @@ public class AdminController {
         if (user.isEmpty() || user.get().getRole() != UserRole.ADMIN)
             return ResponseEntity.status(401).body(Optional.empty());
 
-
         return ResponseEntity.ok(userService.getAllUsers());
     }
 
@@ -134,5 +135,17 @@ public class AdminController {
             return ResponseEntity.status(401).body(Optional.empty());
 
         return ResponseEntity.ok(userService.getAllModerators());
+    }
+
+    @GetMapping("/admin/roleChange")
+    public ResponseEntity<?> changeRole(@RequestBody RoleChangeRequest changeRequest, HttpServletRequest request){
+        Optional<Users> user = checkJwt.checkJwtForUser(request);
+
+        if (user.isEmpty() || user.get().getRole() != UserRole.ADMIN)
+            return ResponseEntity.status(401).body(Optional.empty());
+
+        int res = userService.changeUserRole(changeRequest);
+
+        return ResponseEntity.status(res).build();
     }
 }
