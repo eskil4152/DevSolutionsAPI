@@ -9,6 +9,7 @@ import com.devsolutions.DevSolutionsAPI.Repositories.UserRepository;
 import com.devsolutions.DevSolutionsAPI.Tools.ChangeRole;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
@@ -64,6 +65,7 @@ public class UserService {
         return userRepository.findAllByRole(UserRole.MODERATOR);
     }
 
+    @Transactional
     public int changeUserRole(RoleChangeRequest request) {
         Optional<Users> userOptional = userRepository.findById(request.getId());
 
@@ -85,7 +87,8 @@ public class UserService {
                 break;
         }
 
-        userRepository.changeUserRole(user, newRole);
+        System.out.println("Passing role " + newRole + " to user with id " + user.getId());
+        userRepository.changeUserRole(newRole, user);
 
         return 200;
     }

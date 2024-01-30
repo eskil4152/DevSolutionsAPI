@@ -137,8 +137,10 @@ public class AdminController {
         return ResponseEntity.ok(userService.getAllModerators());
     }
 
-    @GetMapping("/admin/roleChange")
+    @PostMapping("/admin/roleChange")
     public ResponseEntity<?> changeRole(@RequestBody RoleChangeRequest changeRequest, HttpServletRequest request){
+        System.out.println("ENDPOINT REACHED");
+
         Optional<Users> user = checkJwt.checkJwtForUser(request);
 
         if (user.isEmpty() || user.get().getRole() != UserRole.ADMIN)
