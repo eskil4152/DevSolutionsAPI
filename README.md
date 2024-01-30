@@ -23,9 +23,6 @@ The server for DevSolutions website and services
 * PaymentController - Handles the payment, most likely via 3rd party
 
 ## TODO ##
-
-- [ ] Code cleanup by removing auth checks? SecConfig handles anyway
-
 - [ ] Admin > viewAll -> Pageable
 - [ ] Admin controller
   - [ ] FAQ
@@ -43,9 +40,9 @@ The server for DevSolutions website and services
   - [ ] View all users / mods
     - [x] View all users
     - [x] View all moderators
-    - [ ] Grant moderator status
-    - [ ] Revoke moderator status
-    - [ ] Grand admin status
+    - [x] Grant moderator status
+    - [x] Revoke moderator status
+    - [x] Grant admin status
     - [ ] Revoke admin status
   - [ ] Update Orders status
 
