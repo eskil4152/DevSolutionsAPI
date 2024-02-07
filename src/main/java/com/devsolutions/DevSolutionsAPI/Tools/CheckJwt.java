@@ -1,6 +1,7 @@
 package com.devsolutions.DevSolutionsAPI.Tools;
 
 import com.devsolutions.DevSolutionsAPI.Entities.Users;
+import com.devsolutions.DevSolutionsAPI.Enums.UserRole;
 import com.devsolutions.DevSolutionsAPI.Security.JwtUtil;
 import com.devsolutions.DevSolutionsAPI.Services.UserService;
 import io.jsonwebtoken.Claims;

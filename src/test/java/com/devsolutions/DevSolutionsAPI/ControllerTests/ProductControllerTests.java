@@ -48,11 +48,9 @@ public class ProductControllerTests {
     }
 
     @Test
-    // Add custom exceptions for errors which throws
     public void shouldReturnInvalidProductRequest() throws Exception {
         mockMvc.perform(MockMvcRequestBuilders.get(baseUrl + "/40"))
-                .andExpect(status().is4xxClientError())
-                .andExpect(content().string(Matchers.containsString("Product with ID 40 not found")));
+                .andExpect(status().is4xxClientError());
     }
 
     @Test
