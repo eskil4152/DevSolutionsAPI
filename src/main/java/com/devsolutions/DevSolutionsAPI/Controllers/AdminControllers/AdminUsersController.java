@@ -35,9 +35,9 @@ public class AdminUsersController {
 
     @GetMapping("/users")
     public ResponseEntity<Optional<List<Users>>> getAllUsers(HttpServletRequest request){
-        Optional<Users> user = checkJwt.checkJwtForUser(request);
+        Optional<UserRole> role = checkJwt.checkJwtForRole(request);
 
-        if (user.isEmpty() || user.get().getRole() != UserRole.ADMIN)
+        if (role.isEmpty() || role.get() != UserRole.ADMIN)
             return ResponseEntity.status(401).body(Optional.empty());
 
         return ResponseEntity.ok(userService.getAllUsers());
@@ -45,9 +45,9 @@ public class AdminUsersController {
 
     @GetMapping("/mods")
     public ResponseEntity<Optional<List<Users>>> getAllModerators(HttpServletRequest request){
-        Optional<Users> user = checkJwt.checkJwtForUser(request);
+        Optional<UserRole> role = checkJwt.checkJwtForRole(request);
 
-        if (user.isEmpty() || user.get().getRole() != UserRole.ADMIN)
+        if (role.isEmpty() || role.get() != UserRole.ADMIN)
             return ResponseEntity.status(401).body(Optional.empty());
 
         return ResponseEntity.ok(userService.getAllModerators());
@@ -55,9 +55,9 @@ public class AdminUsersController {
 
     @PostMapping("/roleChange")
     public ResponseEntity<?> changeRole(@RequestBody RoleChangeRequest changeRequest, HttpServletRequest request){
-        Optional<Users> user = checkJwt.checkJwtForUser(request);
+        Optional<UserRole> role = checkJwt.checkJwtForRole(request);
 
-        if (user.isEmpty() || user.get().getRole() != UserRole.ADMIN)
+        if (role.isEmpty() || role.get() != UserRole.ADMIN)
             return ResponseEntity.status(401).body(Optional.empty());
 
         int res = userService.changeUserRole(changeRequest);

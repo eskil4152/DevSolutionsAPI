@@ -26,18 +26,18 @@ public class AdminOrdersController {
     private final CheckJwt checkJwt;
 
     @Autowired
-    public AdminOrdersController(UserService userService, OrderService orderService){
+    public AdminOrdersController(OrderService orderService, CheckJwt checkJwt){
         this.orderService = orderService;
 
-        this.checkJwt = new CheckJwt(userService);
+        this.checkJwt = checkJwt;
     }
 
     // Orders
     @GetMapping("/order/all")
     public ResponseEntity<Optional<List<Orders>>> getAllOrders(HttpServletRequest request){
-        Optional<Users> user = checkJwt.checkJwtForUser(request);
+        Optional<UserRole> role = checkJwt.checkJwtForRole(request);
 
-        if (user.isEmpty() || user.get().getRole() != UserRole.ADMIN)
+        if (role.isEmpty() || role.get() != UserRole.ADMIN)
             return ResponseEntity.status(401).body(Optional.empty());
 
         return ResponseEntity.ok(Optional.of(orderService.getAllOrders()));

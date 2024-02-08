@@ -25,9 +25,9 @@ public class UserController {
     private final CheckJwt checkJwt;
 
     @Autowired
-    public UserController(UserService userService){
+    public UserController(UserService userService, CheckJwt checkJwt){
         this.userService = userService;
-        this.checkJwt = new CheckJwt(userService);
+        this.checkJwt = checkJwt;
 
         this.checkCookie = new CheckCookie(userService);
     }

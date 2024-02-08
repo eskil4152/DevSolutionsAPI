@@ -48,4 +48,25 @@ public class CheckJwt {
             return Optional.empty();
         }
     }
+
+    public Optional<UserRole> checkJwtForRole(HttpServletRequest request) {
+        String authorizationHeader = request.getHeader("Authorization");
+
+        if (authorizationHeader == null || !authorizationHeader.startsWith("Bearer ")) {
+            System.out.println("Invalid or missing Authorization header");
+            return Optional.empty();
+        }
+
+        String jwt = authorizationHeader.substring(7); // Remove "Bearer " prefix
+
+        try {
+            Claims claims = JwtUtil.parseToken(jwt);
+            UserRole role = (UserRole) claims.get("role");
+
+            return Optional.ofNullable(role);
+        } catch (Exception e) {
+            System.out.println("Failed to parse JWT");
+            return Optional.empty();
+        }
+    }
 }

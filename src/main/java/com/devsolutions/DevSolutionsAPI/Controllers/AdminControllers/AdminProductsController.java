@@ -33,9 +33,9 @@ public class AdminProductsController {
     // Products
     @GetMapping("/products/all")
     public ResponseEntity<Optional<List<Products>>> getAllProductsAdmin(HttpServletRequest request){
-        Optional<Users> user = checkJwt.checkJwtForUser(request);
+        Optional<UserRole> role = checkJwt.checkJwtForRole(request);
 
-        if (user.isEmpty() || user.get().getRole() != UserRole.ADMIN)
+        if (role.isEmpty() || role.get() != UserRole.ADMIN)
             return ResponseEntity.status(401).body(Optional.empty());
 
         return ResponseEntity.ok(Optional.ofNullable(productService.getAllProducts()));
@@ -43,9 +43,9 @@ public class AdminProductsController {
 
     @PostMapping("/products/new")
     public ResponseEntity<Optional<Products>> addProduct(@RequestBody ProductsRequest productsRequest, HttpServletRequest request){
-        Optional<Users> user = checkJwt.checkJwtForUser(request);
+        Optional<UserRole> role = checkJwt.checkJwtForRole(request);
 
-        if (user.isEmpty() || user.get().getRole() != UserRole.ADMIN)
+        if (role.isEmpty() || role.get() != UserRole.ADMIN)
             return ResponseEntity.status(401).body(Optional.empty());
 
         Optional<Products> products = productService.saveProduct(productsRequest);
@@ -57,9 +57,9 @@ public class AdminProductsController {
 
     @DeleteMapping("/products/delete/{id}")
     public ResponseEntity<?> deleteProduct(@PathVariable String id, HttpServletRequest request){
-        Optional<Users> user = checkJwt.checkJwtForUser(request);
+        Optional<UserRole> role = checkJwt.checkJwtForRole(request);
 
-        if (user.isEmpty() || user.get().getRole() != UserRole.ADMIN)
+        if (role.isEmpty() || role.get() != UserRole.ADMIN)
             return ResponseEntity.status(401).body(Optional.empty());
 
         boolean didDelete = productService.deleteProduct(Long.parseLong(id));
@@ -72,9 +72,9 @@ public class AdminProductsController {
 
     @PutMapping("/products/update")
     public ResponseEntity<Optional<Products>> updateProduct(@RequestBody ProductsRequest productsRequest, HttpServletRequest request){
-        Optional<Users> user = checkJwt.checkJwtForUser(request);
+        Optional<UserRole> role = checkJwt.checkJwtForRole(request);
 
-        if (user.isEmpty() || user.get().getRole() != UserRole.ADMIN)
+        if (role.isEmpty() || role.get() != UserRole.ADMIN)
             return ResponseEntity.status(401).body(Optional.empty());
 
         Optional<Products> products = productService.updateProduct(productsRequest);
