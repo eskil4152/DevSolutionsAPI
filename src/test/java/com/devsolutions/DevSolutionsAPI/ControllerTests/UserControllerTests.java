@@ -1,5 +1,7 @@
 package com.devsolutions.DevSolutionsAPI.ControllerTests;
 
+import com.devsolutions.DevSolutionsAPI.Enums.UserRole;
+import com.devsolutions.DevSolutionsAPI.Security.JwtUtil;
 import org.hamcrest.Matchers;
 import org.json.JSONObject;
 import org.junit.jupiter.api.*;
@@ -49,6 +51,22 @@ public class UserControllerTests {
 
     @Test
     @Order(2)
+    public void shouldFailToRegister() throws Exception {
+        JSONObject jsonObject = new JSONObject()
+                .put("firstname", "testfirst")
+                .put("lastname", "testlast")
+                .put("username", "testuser")
+                .put("password", "testpass")
+                .put("email", "test@pass.com");
+
+        mockMvc.perform(MockMvcRequestBuilders.post(baseUrl + "/register")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(jsonObject.toString()))
+                .andExpect(status().is4xxClientError());
+    }
+
+    @Test
+    @Order(3)
     public void shouldLogInAndGetUserInfo() throws Exception {
         JSONObject jsonObject = new JSONObject()
                 .put("username", "testuser")
@@ -72,7 +90,7 @@ public class UserControllerTests {
     }
 
     @Test
-    @Order(3)
+    @Order(4)
     public void shouldFailToLogIn() throws Exception {
         JSONObject jsonObject = new JSONObject()
                 .put("username", "testuser")
@@ -85,9 +103,19 @@ public class UserControllerTests {
     }
 
     @Test
-    @Order(4)
-    public void shouldFailToGetUserInfo() throws Exception {
+    @Order(5)
+    public void shouldFailToGetUserInfoWhenNotLoggedIn() throws Exception {
         mockMvc.perform(MockMvcRequestBuilders.get(baseUrl + "/user"))
+                .andExpect(status().is4xxClientError());
+    }
+
+    @Test
+    @Order(6)
+    public void shouldFailToGetUserInfoWhenTokenIsInvalid() throws Exception {
+        String token = JwtUtil.generateToken("fakeuser", UserRole.USER);
+
+        mockMvc.perform(MockMvcRequestBuilders.get(baseUrl + "/user")
+                .header("Authorization", "Bearer " + token))
                 .andExpect(status().is4xxClientError());
     }
 }
