@@ -30,9 +30,11 @@ jobs:
           name: coverage-report-xml
           path: target/site/jacoco/jacoco.xml
 
+      - name: Zip coverage report HTML directory
+        run: zip -r coverage-report-html.zip target/site/jacoco/
+
       - name: Post coverage report - HTML
         uses: actions/upload-artifact@v2
         with:
           name: coverage-report-html
-          path: target/site/jacoco/index.html
-        # Upload JaCoCo coverage report as artifact
+          path: coverage-report-html.zip
