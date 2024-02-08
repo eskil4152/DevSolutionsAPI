@@ -24,9 +24,15 @@ jobs:
           mvn clean test jacoco:report
         # Generate JaCoCo coverage report
 
-      - name: Post coverage report
+      - name: Post coverage report - XML
         uses: actions/upload-artifact@v2
         with:
-          name: coverage-report
-          path: target/site/jacoco/jacoco.html
+          name: coverage-report-xml
+          path: target/site/jacoco/jacoco.xml
+
+      - name: Post coverage report - HTML
+        uses: actions/upload-artifact@v2
+        with:
+          name: coverage-report-html
+          path: target/site/jacoco/index.html
         # Upload JaCoCo coverage report as artifact
