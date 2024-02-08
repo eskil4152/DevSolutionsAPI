@@ -55,21 +55,7 @@ public class AdminProductsController {
         return ResponseEntity.ok(products);
     }
 
-    @DeleteMapping("/products/delete/{id}")
-    public ResponseEntity<?> deleteProduct(@PathVariable String id, HttpServletRequest request){
-        Optional<UserRole> role = checkJwt.checkJwtForRole(request);
-
-        if (role.isEmpty() || role.get() != UserRole.ADMIN)
-            return ResponseEntity.status(401).body(Optional.empty());
-
-        boolean didDelete = productService.deleteProduct(Long.parseLong(id));
-
-        if (!didDelete)
-            return ResponseEntity.notFound().build();
-
-        return ResponseEntity.ok().build();
-    }
-
+    // TODO Fix, does not know old name of product
     @PutMapping("/products/update")
     public ResponseEntity<Optional<Products>> updateProduct(@RequestBody ProductsRequest productsRequest, HttpServletRequest request){
         Optional<UserRole> role = checkJwt.checkJwtForRole(request);
@@ -83,5 +69,20 @@ public class AdminProductsController {
             return ResponseEntity.status(409).body(Optional.empty());
 
         return ResponseEntity.ok(products);
+    }
+
+    @DeleteMapping("/products/delete/{id}")
+    public ResponseEntity<?> deleteProduct(@PathVariable String id, HttpServletRequest request){
+        Optional<UserRole> role = checkJwt.checkJwtForRole(request);
+
+        if (role.isEmpty() || role.get() != UserRole.ADMIN)
+            return ResponseEntity.status(401).body(Optional.empty());
+
+        boolean didDelete = productService.deleteProduct(Long.parseLong(id));
+
+        if (!didDelete)
+            return ResponseEntity.notFound().build();
+
+        return ResponseEntity.ok().build();
     }
 }

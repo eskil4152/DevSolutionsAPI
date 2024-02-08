@@ -61,9 +61,9 @@ public class CheckJwt {
 
         try {
             Claims claims = JwtUtil.parseToken(jwt);
-            UserRole role = (UserRole) claims.get("role");
+            UserRole role = UserRole.valueOf(claims.get("role", String.class));
 
-            return Optional.ofNullable(role);
+            return Optional.of(role);
         } catch (Exception e) {
             System.out.println("Failed to parse JWT");
             return Optional.empty();

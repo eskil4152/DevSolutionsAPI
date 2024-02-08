@@ -37,7 +37,7 @@ public class UserController {
         String username = loginRequest.getUsername();
         String password = loginRequest.getPassword();
 
-        var user = userService.login(username, password);
+        Optional<Users> user = userService.login(username, password);
 
         if (user.isEmpty())
             return ResponseEntity.status(401).body(Optional.empty());
