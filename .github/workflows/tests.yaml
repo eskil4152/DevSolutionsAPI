@@ -21,12 +21,12 @@ jobs:
 
       - name: Run tests and generate coverage report
         run: |
-          ./gradlew clean test jacocoTestReport
+          mvn clean test jacoco:report
         # Generate JaCoCo coverage report
 
       - name: Post coverage report
         uses: actions/upload-artifact@v2
         with:
           name: coverage-report
-          path: build/reports/jacoco/test/jacocoTestReport.xml
+          path: target/site/jacoco/jacoco.xml
         # Upload JaCoCo coverage report as artifact
