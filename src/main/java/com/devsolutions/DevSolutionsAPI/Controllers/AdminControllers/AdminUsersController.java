@@ -53,6 +53,7 @@ public class AdminUsersController {
         return ResponseEntity.ok(userService.getAllModerators());
     }
 
+    // TODO - Case sensitive, consider change
     @PostMapping("/roleChange")
     public ResponseEntity<?> changeRole(@RequestBody RoleChangeRequest changeRequest, HttpServletRequest request){
         Optional<UserRole> role = checkJwt.checkJwtForRole(request);

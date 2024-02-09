@@ -3,7 +3,7 @@ spring:
     console:
       enabled: true
   datasource:
-    url: jdbc:h2:mem:itemdb
+    url: jdbc:h2:mem:testdb
     username: username
     password: password
   jpa:

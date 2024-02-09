@@ -1,5 +1,7 @@
 package com.devsolutions.DevSolutionsAPI.ControllerTests;
 
+import com.devsolutions.DevSolutionsAPI.ControllerTests.AdminControllers.AdminUsersControllerTests;
+import com.devsolutions.DevSolutionsAPI.CreateTestUser;
 import com.devsolutions.DevSolutionsAPI.Enums.UserRole;
 import com.devsolutions.DevSolutionsAPI.Security.JwtUtil;
 import org.hamcrest.Matchers;
@@ -10,10 +12,12 @@ import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabas
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
+import org.springframework.transaction.annotation.Transactional;
 
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
@@ -24,6 +28,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class UserControllerTests {
     private final MockMvc mockMvc;
+    private CreateTestUser createTestUser;
 
     @Autowired
     public UserControllerTests(MockMvc mockMvc) {
@@ -35,10 +40,10 @@ public class UserControllerTests {
     @Test
     @Order(1)
     public void shouldRegister() throws Exception {
-        JSONObject jsonObject = new JSONObject()
+        /*JSONObject jsonObject = new JSONObject()
                 .put("firstname", "testfirst")
                 .put("lastname", "testlast")
-                .put("username", "testuser")
+                .put("username", "testuser2")
                 .put("password", "testpass")
                 .put("email", "test@pass.com");
 
@@ -46,7 +51,9 @@ public class UserControllerTests {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(jsonObject.toString()))
                 .andExpect(status().isOk())
-                .andExpect(header().exists("Authorization"));
+                .andExpect(header().exists("Authorization"));*/
+
+        createTestUser.registerTestUser();
     }
 
     @Test
