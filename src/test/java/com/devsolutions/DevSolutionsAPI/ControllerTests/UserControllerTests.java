@@ -40,10 +40,10 @@ public class UserControllerTests {
     @Test
     @Order(1)
     public void shouldRegister() throws Exception {
-        /*JSONObject jsonObject = new JSONObject()
+        JSONObject jsonObject = new JSONObject()
                 .put("firstname", "testfirst")
                 .put("lastname", "testlast")
-                .put("username", "testuser2")
+                .put("username", "testuser")
                 .put("password", "testpass")
                 .put("email", "test@pass.com");
 
@@ -51,9 +51,7 @@ public class UserControllerTests {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(jsonObject.toString()))
                 .andExpect(status().isOk())
-                .andExpect(header().exists("Authorization"));*/
-
-        createTestUser.registerTestUser();
+                .andExpect(header().exists("Authorization"));
     }
 
     @Test

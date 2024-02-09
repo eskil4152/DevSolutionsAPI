@@ -48,24 +48,35 @@ public class AdminUsersControllerTests {
     @Test
     @Order(1)
     public void shouldMakeTestUser() throws Exception {
-        createTestUser.registerTestUser();
+        JSONObject jsonObject = new JSONObject()
+                .put("firstname", "firstname")
+                .put("lastname", "lastname")
+                .put("username", "username")
+                .put("password", "password")
+                .put("email", "test@pass.com");
+
+        mockMvc.perform(MockMvcRequestBuilders.post("http://localhost:8080/api/register")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(jsonObject.toString()))
+                .andExpect(status().isOk())
+                .andExpect(header().exists("Authorization"));
     }
 
     @Test
     @Order(2)
-    public void shouldGetAllUsers() throws Exception {
-        mockMvc.perform(MockMvcRequestBuilders.get(baseUrl + "/users")
+    public void shouldGetNoMods() throws Exception {
+        mockMvc.perform(MockMvcRequestBuilders.get(baseUrl + "/mods")
                         .header("Authorization", "Bearer " + token))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$[0].username", Matchers.containsString("testuser")));
+                .andExpect(MockMvcResultMatchers.jsonPath("$").isArray())
+                .andExpect(MockMvcResultMatchers.jsonPath("$").isEmpty());
     }
 
     @Test
     @Order(3)
     public void shouldPromoteUserToMod() throws Exception {
         JSONObject data = new JSONObject()
-                .put("id", 1)
-                .put("username", "testuser")
+                .put("username", "username")
                 .put("change", "PROMOTE");
 
         mockMvc.perform(MockMvcRequestBuilders.post(baseUrl + "/roleChange")
@@ -81,15 +92,14 @@ public class AdminUsersControllerTests {
         mockMvc.perform(MockMvcRequestBuilders.get(baseUrl + "/mods")
                         .header("Authorization", "Bearer " + token))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$[0].username", Matchers.containsString("testuser")));
+                .andExpect(jsonPath("$[0].username", Matchers.containsString("username")));
     }
 
     @Test
     @Order(5)
     public void shouldDemoteModToUser() throws Exception {
         JSONObject data = new JSONObject()
-                .put("id", 1)
-                .put("username", "testuser")
+                .put("username", "username")
                 .put("change", "DEMOTE");
 
         mockMvc.perform(MockMvcRequestBuilders.post(baseUrl + "/roleChange")
@@ -101,7 +111,7 @@ public class AdminUsersControllerTests {
 
     @Test
     @Order(6)
-    public void shouldGetNoMods() throws Exception {
+    public void shouldGetNoModsAgain() throws Exception {
         mockMvc.perform(MockMvcRequestBuilders.get(baseUrl + "/mods")
                         .header("Authorization", "Bearer " + token))
                 .andExpect(status().isOk())

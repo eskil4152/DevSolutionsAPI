@@ -67,9 +67,9 @@ public class UserService {
 
     @Transactional
     public int changeUserRole(RoleChangeRequest request) {
-        Optional<Users> userOptional = userRepository.findById(request.getId());
+        Optional<Users> userOptional = userRepository.findByUsername(request.getUsername());
 
-        if (userOptional.isEmpty() || !userOptional.get().getUsername().equals(request.getUsername()))
+        if (userOptional.isEmpty())
             return 404;
 
         Users user = userOptional.get();
@@ -87,7 +87,7 @@ public class UserService {
                 break;
         }
 
-        System.out.println("Passing role " + newRole + " to user with id " + user.getId());
+        System.out.println("Passing role " + newRole + " to user " + user.getUsername());
         userRepository.changeUserRole(newRole, user);
 
         return 200;
