@@ -1,6 +1,7 @@
 package com.devsolutions.DevSolutionsAPI.Tools;
 
 import com.devsolutions.DevSolutionsAPI.Entities.Users;
+import com.devsolutions.DevSolutionsAPI.Enums.UserRole;
 import com.devsolutions.DevSolutionsAPI.Security.JwtUtil;
 import com.devsolutions.DevSolutionsAPI.Services.UserService;
 import io.jsonwebtoken.Claims;
@@ -42,6 +43,27 @@ public class CheckJwt {
                 System.out.println("User not found for the given JWT");
                 return Optional.empty();
             }
+        } catch (Exception e) {
+            System.out.println("Failed to parse JWT");
+            return Optional.empty();
+        }
+    }
+
+    public Optional<UserRole> checkJwtForRole(HttpServletRequest request) {
+        String authorizationHeader = request.getHeader("Authorization");
+
+        if (authorizationHeader == null || !authorizationHeader.startsWith("Bearer ")) {
+            System.out.println("Invalid or missing Authorization header");
+            return Optional.empty();
+        }
+
+        String jwt = authorizationHeader.substring(7); // Remove "Bearer " prefix
+
+        try {
+            Claims claims = JwtUtil.parseToken(jwt);
+            UserRole role = UserRole.valueOf(claims.get("role", String.class));
+
+            return Optional.of(role);
         } catch (Exception e) {
             System.out.println("Failed to parse JWT");
             return Optional.empty();

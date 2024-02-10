@@ -25,9 +25,9 @@ public class UserController {
     private final CheckJwt checkJwt;
 
     @Autowired
-    public UserController(UserService userService){
+    public UserController(UserService userService, CheckJwt checkJwt){
         this.userService = userService;
-        this.checkJwt = new CheckJwt(userService);
+        this.checkJwt = checkJwt;
 
         this.checkCookie = new CheckCookie(userService);
     }
@@ -37,7 +37,7 @@ public class UserController {
         String username = loginRequest.getUsername();
         String password = loginRequest.getPassword();
 
-        var user = userService.login(username, password);
+        Optional<Users> user = userService.login(username, password);
 
         if (user.isEmpty())
             return ResponseEntity.status(401).body(Optional.empty());

@@ -1,0 +1,40 @@
+name: Build, Test, and Check Coverage
+
+on:
+  push:
+    branches:
+      - work
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Set up JDK
+        uses: actions/setup-java@v2
+        with:
+          java-version: '17'
+          distribution: 'adopt'
+
+      - name: Run tests and generate coverage report
+        run: |
+          mvn clean test jacoco:report
+        # Generate JaCoCo coverage report
+
+      - name: Post coverage report - XML
+        uses: actions/upload-artifact@v2
+        with:
+          name: coverage-report-xml
+          path: target/site/jacoco/jacoco.xml
+
+      - name: Zip coverage report HTML directory
+        run: zip -r coverage-report-html.zip target/site/jacoco/
+
+      - name: Post coverage report - HTML
+        uses: actions/upload-artifact@v2
+        with:
+          name: coverage-report-html
+          path: coverage-report-html.zip

@@ -40,7 +40,7 @@ public class OrderService {
         if (product.isEmpty())
             return Optional.empty();
 
-        Orders order = new Orders(user, product.get(), price, orderDate, notes, billingAddress, paymentMethod);
+        Orders order = new Orders(user, product.get(), price, orderDate, notes, paymentMethod, billingAddress);
 
         orderRepository.save(order);
         userOrderService.saveUserOrder(user, order);
