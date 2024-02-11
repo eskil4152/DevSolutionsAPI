@@ -34,7 +34,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class AdminUsersControllerTests {
     private final MockMvc mockMvc;
-    private CreateTestUser createTestUser;
 
     private final String token = JwtUtil.generateToken("Admin", UserRole.ADMIN);
 
@@ -51,7 +50,7 @@ public class AdminUsersControllerTests {
         JSONObject jsonObject = new JSONObject()
                 .put("firstname", "firstname")
                 .put("lastname", "lastname")
-                .put("username", "username")
+                .put("username", "usernames")
                 .put("password", "password")
                 .put("email", "test@pass.com");
 
@@ -76,7 +75,7 @@ public class AdminUsersControllerTests {
     @Order(3)
     public void shouldPromoteUserToMod() throws Exception {
         JSONObject data = new JSONObject()
-                .put("username", "username")
+                .put("username", "usernames")
                 .put("change", "PROMOTE");
 
         mockMvc.perform(MockMvcRequestBuilders.post(baseUrl + "/roleChange")
@@ -92,14 +91,14 @@ public class AdminUsersControllerTests {
         mockMvc.perform(MockMvcRequestBuilders.get(baseUrl + "/mods")
                         .header("Authorization", "Bearer " + token))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$[0].username", Matchers.containsString("username")));
+                .andExpect(jsonPath("$[0].username", Matchers.containsString("usernames")));
     }
 
     @Test
     @Order(5)
     public void shouldDemoteModToUser() throws Exception {
         JSONObject data = new JSONObject()
-                .put("username", "username")
+                .put("username", "usernames")
                 .put("change", "DEMOTE");
 
         mockMvc.perform(MockMvcRequestBuilders.post(baseUrl + "/roleChange")
@@ -117,5 +116,21 @@ public class AdminUsersControllerTests {
                 .andExpect(status().isOk())
                 .andExpect(MockMvcResultMatchers.jsonPath("$").isArray())
                 .andExpect(MockMvcResultMatchers.jsonPath("$").isEmpty());
+    }
+
+    @Test
+    @Order(7)
+    public void shouldGetAllUsers() throws Exception {
+        mockMvc.perform(MockMvcRequestBuilders.get(baseUrl + "/users")
+                        .header("Authorization", "Bearer " + token))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$..username", Matchers.hasItem("usernames")));
+    }
+
+    @Test
+    @Order(8)
+    public void shouldNotGetUsersWhenUnauthorized() throws Exception {
+        mockMvc.perform(MockMvcRequestBuilders.get(baseUrl + "/users"))
+                .andExpect(status().is4xxClientError());
     }
 }
