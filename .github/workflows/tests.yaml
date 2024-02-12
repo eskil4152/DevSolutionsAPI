@@ -26,20 +26,16 @@ jobs:
       - name: Extract coverage percentage
         id: extract-coverage
         run: |
-          coverage=$(grep -Po "(?<=<counter type=\"INSTRUCTION\" covered=\")(.*?)(?=\")" target/site/jacoco/jacoco.xml)
+          coverage=$(xmlstarlet sel -t -v 'sum(//counter[@type="INSTRUCTION"]/@covered) div sum(//counter[@type="INSTRUCTION"]/@missed) * 100' target/site/jacoco/jacoco.xml)
           echo "::set-output name=coverage::$coverage"
 
       - name: Create coverage badge
         id: create-badge
         run: |
-          echo "[![Coverage](https://img.shields.io/badge/Coverage-${{ steps.extract-coverage.outputs.coverage }}%25-brightgreen)](https://github.com/your-repository)" > coverage-badge.md
+          jq -n --arg cov "${{ steps.extract-coverage.outputs.coverage }}" '{schemaVersion: 1, label: "Coverage", message: $cov | tonumber | tostring + "%", color: "brightgreen"}' > coverage-badge.json
 
       - name: Upload coverage badge as artifact
         uses: actions/upload-artifact@v2
         with:
           name: coverage-badge
-          path: coverage-badge.md
-
-      - name: Update README.md with coverage badge
-        run: |
-          echo "![](./coverage-badge.md)" >> README.md
+          path: coverage-badge.json
