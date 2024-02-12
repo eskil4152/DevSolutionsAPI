@@ -22,19 +22,24 @@ jobs:
       - name: Run tests and generate coverage report
         run: |
           mvn clean test jacoco:report
-        # Generate JaCoCo coverage report
 
-      - name: Post coverage report - XML
+      - name: Extract coverage percentage
+        id: extract-coverage
+        run: |
+          coverage=$(grep -Po "(?<=<counter type=\"INSTRUCTION\" covered=\")(.*?)(?=\")" target/site/jacoco/jacoco.xml)
+          echo "::set-output name=coverage::$coverage"
+
+      - name: Create coverage badge
+        id: create-badge
+        run: |
+          echo "[![Coverage](https://img.shields.io/badge/Coverage-${{ steps.extract-coverage.outputs.coverage }}%25-brightgreen)](https://github.com/your-repository)" > coverage-badge.md
+
+      - name: Upload coverage badge as artifact
         uses: actions/upload-artifact@v2
         with:
-          name: coverage-report-xml
-          path: target/site/jacoco/jacoco.xml
+          name: coverage-badge
+          path: coverage-badge.md
 
-      - name: Zip coverage report HTML directory
-        run: zip -r coverage-report-html.zip target/site/jacoco/
-
-      - name: Post coverage report - HTML
-        uses: actions/upload-artifact@v2
-        with:
-          name: coverage-report-html
-          path: coverage-report-html.zip
+      - name: Update README.md with coverage badge
+        run: |
+          echo "![](./coverage-badge.md)" >> README.md
