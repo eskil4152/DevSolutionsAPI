@@ -38,7 +38,9 @@ jobs:
       - name: Create coverage badge
         id: create-badge
         run: |
-          jq -n --arg cov "${{ steps.extract-coverage.outputs.coverage }}" '{schemaVersion: 1, label: "Coverage", message: ($cov + "%"), color: "brightgreen"}' > coverage-badge.json
+          cov="${{ steps.extract-coverage.outputs.coverage }}"
+          jq -n --arg cov "$cov" '{schemaVersion: 1, label: "Coverage", message: ($cov + "%"), color: "brightgreen"}' > coverage-badge.json
+      
 
       - name: Upload coverage badge as artifact
         uses: actions/upload-artifact@v2
