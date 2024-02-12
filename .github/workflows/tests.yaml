@@ -26,9 +26,11 @@ jobs:
       - name: Extract coverage percentage
         id: extract-coverage
         run: |
-          covered=$(xmlstarlet sel -t -v 'sum(//counter[@type="INSTRUCTION"]/@covered)' target/site/jacoco/jacoco.xml)
-          missed=$(xmlstarlet sel -t -v 'sum(//counter[@type="INSTRUCTION"]/@missed)' target/site/jacoco/jacoco.xml)
-          coverage=$(echo "scale=2; (${covered} / (${covered} + ${missed})) * 100" | bc)
+          # Extract covered and missed instruction counts
+          covered=$(grep -o 'type="INSTRUCTION" covered="[0-9]\+"' target/site/jacoco/jacoco.xml | grep -o '[0-9]\+' | paste -sd+ -)
+          missed=$(grep -o 'type="INSTRUCTION" missed="[0-9]\+"' target/site/jacoco/jacoco.xml | grep -o '[0-9]\+' | paste -sd+ -)
+
+          coverage=$(echo "scale=2; ($covered / ($covered + $missed)) * 100" | bc)
           echo "::set-output name=coverage::$coverage"
 
       - name: Create coverage badge
