@@ -26,13 +26,15 @@ jobs:
       - name: Extract coverage percentage
         id: extract-coverage
         run: |
-          coverage=$(xmlstarlet sel -t -v 'sum(//counter[@type="INSTRUCTION"]/@covered) div sum(//counter[@type="INSTRUCTION"]/@missed) * 100' target/site/jacoco/jacoco.xml)
+          covered=$(jq -r '(.report.counter[] | select(.["@type"] == "INSTRUCTION")).["@covered"]' target/site/jacoco/jacoco.json | paste -sd+ -)
+          missed=$(jq -r '(.report.counter[] | select(.["@type"] == "INSTRUCTION")).["@missed"]' target/site/jacoco/jacoco.json | paste -sd+ -)
+          coverage=$(echo "scale=2; (${covered} / (${covered} + ${missed})) * 100" | bc)
           echo "::set-output name=coverage::$coverage"
 
       - name: Create coverage badge
         id: create-badge
         run: |
-          jq -n --arg cov "${{ steps.extract-coverage.outputs.coverage }}" '{schemaVersion: 1, label: "Coverage", message: $cov | tonumber | tostring + "%", color: "brightgreen"}' > coverage-badge.json
+          jq -n --arg cov "${{ steps.extract-coverage.outputs.coverage }}" '{schemaVersion: 1, label: "Coverage", message: $cov + "%", color: "brightgreen"}' > coverage-badge.json
 
       - name: Upload coverage badge as artifact
         uses: actions/upload-artifact@v2
