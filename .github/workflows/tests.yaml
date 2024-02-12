@@ -26,21 +26,26 @@ jobs:
       - name: Extract coverage percentage
         id: extract-coverage
         run: |
-          covered=$(grep -o 'type="INSTRUCTION" covered="[0-9]\+"' target/site/jacoco/jacoco.xml | grep -o '[0-9]\+' | paste -sd+ -)
-          missed=$(grep -o 'type="INSTRUCTION" missed="[0-9]\+"' target/site/jacoco/jacoco.xml | grep -o '[0-9]\+' | paste -sd+ -)
-          # Check if either covered or missed is empty and set them to 0
-          [[ -z $covered ]] && covered=0
-          [[ -z $missed ]] && missed=0
-          # Calculate coverage percentage
+          csv_file="target/site/jacoco/jacoco.csv"
+          if [ ! -f "$csv_file" ]; then
+          echo "Error: CSV file not found."
+          exit 1
+          fi
+          covered=$(awk -F ',' '{sum += $5} END {print sum}' "$csv_file")
+          missed=$(awk -F ',' '{sum += $4} END {print sum}' "$csv_file")
+          if [[ -n $covered && -n $missed ]]; then
           coverage=$(echo "scale=2; ($covered / ($covered + $missed)) * 100" | bc)
-
+          echo "::set-output name=coverage::$coverage"
+          else
+          echo "Error: Unable to extract coverage values."
+          exit 1
+          fi
 
       - name: Create coverage badge
         id: create-badge
         run: |
           cov="${{ steps.extract-coverage.outputs.coverage }}"
           jq -n --arg cov "$cov" '{schemaVersion: 1, label: "Coverage", message: ($cov + "%"), color: "brightgreen"}' > coverage-badge.json
-      
 
       - name: Upload coverage badge as artifact
         uses: actions/upload-artifact@v2
