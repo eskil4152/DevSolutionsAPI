@@ -26,8 +26,8 @@ jobs:
       - name: Extract coverage percentage
         id: extract-coverage
         run: |
-          covered=$(xpath -q -e 'sum(//counter[@type="INSTRUCTION"]/@covered)' target/site/jacoco/jacoco.xml)
-          missed=$(xpath -q -e 'sum(//counter[@type="INSTRUCTION"]/@missed)' target/site/jacoco/jacoco.xml)
+          covered=$(xmlstarlet sel -t -v 'sum(//counter[@type="INSTRUCTION"]/@covered)' target/site/jacoco/jacoco.xml)
+          missed=$(xmlstarlet sel -t -v 'sum(//counter[@type="INSTRUCTION"]/@missed)' target/site/jacoco/jacoco.xml)
           coverage=$(echo "scale=2; (${covered} / (${covered} + ${missed})) * 100" | bc)
           echo "::set-output name=coverage::$coverage"
 
