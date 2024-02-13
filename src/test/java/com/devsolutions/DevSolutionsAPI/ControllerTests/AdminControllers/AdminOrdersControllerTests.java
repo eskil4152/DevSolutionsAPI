@@ -31,10 +31,9 @@ public class AdminOrdersControllerTests {
     private final MockMvc mockMvc;
 
     private final String baseUrl = "http://localhost:8080/api/admin/order";
-    private final String token = "Bearer " + JwtUtil.generateToken("orderuseradmin", UserRole.USER);
-    private final String tokenAdmin = "Bearer " + JwtUtil.generateToken("orderAdmin", UserRole.ADMIN);
 
-    private Long orderId;
+    private final Cookie adminCookie = new Cookie("Authentication", JwtUtil.generateToken("orderAdmin", UserRole.ADMIN));
+    private final Cookie userCookie = new Cookie("Authentication", JwtUtil.generateToken("orderUserAdmin", UserRole.USER));
 
     @Autowired
     public AdminOrdersControllerTests(MockMvc mockMvc) {
@@ -43,30 +42,11 @@ public class AdminOrdersControllerTests {
 
     @Test
     @Order(1)
-    public void shouldCreateNewAdmin() throws Exception {
-        JSONObject jsonObject = new JSONObject()
-                .put("firstname", "order")
-                .put("lastname", "admin")
-                .put("username", "orderAdmin")
-                .put("password", "password")
-                .put("email", "order@admin.com");
-
-        mockMvc.perform(MockMvcRequestBuilders.post("http://localhost:8080/api/register")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .cookie()
-                        .content(jsonObject.toString()))
-                .andExpect(status().isOk())
-                .andExpect(header().exists("Authorization"));
-
-    }
-
-    @Test
-    @Order(2)
     public void shouldCreateNewUserAndPlaceOrder() throws Exception {
         JSONObject jsonObject = new JSONObject()
                 .put("firstname", "order")
                 .put("lastname", "user")
-                .put("username", "orderuseradmin")
+                .put("username", "orderUserAdmin")
                 .put("password", "password")
                 .put("email", "order@user.com");
 
@@ -74,7 +54,7 @@ public class AdminOrdersControllerTests {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(jsonObject.toString()))
                 .andExpect(status().isOk())
-                .andExpect(header().exists("Authorization"));
+                .andExpect(cookie().exists("Authentication"));
 
         JSONObject order = new JSONObject()
                 .put("productId","1")
@@ -83,24 +63,21 @@ public class AdminOrdersControllerTests {
                 .put("paymentMethod", "VISA")
                 .put("billingAddress", "Address");
 
-        MvcResult result = mockMvc.perform(MockMvcRequestBuilders.post("http://localhost:8080/api/order/new")
+        mockMvc.perform(MockMvcRequestBuilders.post("http://localhost:8080/api/order/new")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(order.toString())
-                        .header("Authorization", token))
+                        .cookie(userCookie))
                 .andExpect(status().isOk())
                 .andReturn();
-
-        Orders orderResponse = new ObjectMapper().readValue(result.getResponse().getContentAsString(), Orders.class);
-
-       orderId = orderResponse.getId();
     }
 
     @Test
-    @Order(3)
+    @Order(2)
+    //TODO Expand
     public void shouldGetAllOrders() throws Exception {
         mockMvc.perform(MockMvcRequestBuilders.get(baseUrl + "/all")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .header("Authorization", tokenAdmin))
+                        .cookie(adminCookie))
                 .andExpect(status().isOk());
     }
 
@@ -109,7 +86,7 @@ public class AdminOrdersControllerTests {
     @Disabled
     public void shouldUpdateAnOrder() throws Exception {
         mockMvc.perform(MockMvcRequestBuilders.get(baseUrl + "/all")
-                        .header("Authorization", token))
+                        .cookie(adminCookie))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$[0].id", Matchers.is(1)))
                 .andExpect(jsonPath("$[0].price", Matchers.is(199.0)))
@@ -124,7 +101,7 @@ public class AdminOrdersControllerTests {
     @Disabled
     public void shouldCancelAnOrder() throws Exception {
         mockMvc.perform(MockMvcRequestBuilders.get(baseUrl + "/1")
-                        .header("Authorization", token))
+                        .cookie(adminCookie))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("id", Matchers.is(1)))
                 .andExpect(jsonPath("price", Matchers.is(199.0)))

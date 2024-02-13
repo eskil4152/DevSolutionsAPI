@@ -2,12 +2,8 @@ package com.devsolutions.DevSolutionsAPI.Controllers.OwnerControllers;
 
 import com.devsolutions.DevSolutionsAPI.Entities.Users;
 import com.devsolutions.DevSolutionsAPI.Enums.UserRole;
-import com.devsolutions.DevSolutionsAPI.RequestBodies.RoleChangeRequest;
-import com.devsolutions.DevSolutionsAPI.Services.OrderService;
-import com.devsolutions.DevSolutionsAPI.Services.ProductService;
 import com.devsolutions.DevSolutionsAPI.Services.UserService;
 import com.devsolutions.DevSolutionsAPI.Tools.CheckCookie;
-import com.devsolutions.DevSolutionsAPI.Tools.CheckJwt;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;

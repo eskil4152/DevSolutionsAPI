@@ -1,16 +1,13 @@
 package com.devsolutions.DevSolutionsAPI.Controllers.AdminControllers;
 
 import com.devsolutions.DevSolutionsAPI.Entities.Products;
-import com.devsolutions.DevSolutionsAPI.Entities.Users;
 import com.devsolutions.DevSolutionsAPI.Enums.UserRole;
 import com.devsolutions.DevSolutionsAPI.RequestBodies.ProductsRequest;
 import com.devsolutions.DevSolutionsAPI.Services.ProductService;
 import com.devsolutions.DevSolutionsAPI.Services.UserService;
 import com.devsolutions.DevSolutionsAPI.Tools.CheckCookie;
-import com.devsolutions.DevSolutionsAPI.Tools.CheckJwt;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.ComponentScan;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 

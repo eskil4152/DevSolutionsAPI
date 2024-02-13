@@ -4,6 +4,7 @@ import com.devsolutions.DevSolutionsAPI.Tools.GetVariables;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;
+import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.jetbrains.annotations.NotNull;
@@ -21,11 +22,8 @@ import java.util.Collections;
 
 public class JwtFilter extends OncePerRequestFilter {
     private static String SECRET;
-    private static final String HEADER_NAME = "Authorization";
-    private static final String TOKEN_PREFIX = "Bearer ";
+    private static final String COOKIE_NAME = "Authentication";
     private static final String ROLE_CLAIM = "role";
-
-    private static final String COOKIE_NAME = "AuthCookie";
 
     @Override
     protected void doFilterInternal(
@@ -49,7 +47,9 @@ public class JwtFilter extends OncePerRequestFilter {
                 }
             }
         } catch (ExpiredJwtException e) {
-            // Handle expired token exception
+            SecurityContextHolder.clearContext();
+            response.sendRedirect("/login");
+            return;
         }
 
         filterChain.doFilter(request, response);
@@ -64,10 +64,16 @@ public class JwtFilter extends OncePerRequestFilter {
     }
 
     private String extractJwtFromRequest(HttpServletRequest request) {
-        String authorizationHeader = request.getHeader(HEADER_NAME);
-        if (authorizationHeader != null && authorizationHeader.startsWith(TOKEN_PREFIX)) {
-            return authorizationHeader.substring(TOKEN_PREFIX.length());
+        Cookie[] cookies = request.getCookies();
+
+        if (cookies != null) {
+            for (Cookie cookie : cookies) {
+                if (cookie.getName().equals(COOKIE_NAME)) {
+                    return cookie.getValue();
+                }
+            }
         }
+
         return null;
     }
 }

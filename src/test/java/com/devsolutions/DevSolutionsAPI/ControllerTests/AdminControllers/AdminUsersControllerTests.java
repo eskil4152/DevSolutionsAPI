@@ -2,6 +2,7 @@ package com.devsolutions.DevSolutionsAPI.ControllerTests.AdminControllers;
 
 import com.devsolutions.DevSolutionsAPI.Enums.UserRole;
 import com.devsolutions.DevSolutionsAPI.Security.JwtUtil;
+import jakarta.servlet.http.Cookie;
 import org.hamcrest.Matchers;
 import org.json.JSONObject;
 import org.junit.jupiter.api.*;
@@ -26,7 +27,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 public class AdminUsersControllerTests {
     private final MockMvc mockMvc;
 
-    private final String token = JwtUtil.generateToken("Admin", UserRole.ADMIN);
+    private final Cookie cookie = new Cookie("Authentication", JwtUtil.generateToken("Admin", UserRole.ADMIN));
 
     @Autowired
     public AdminUsersControllerTests(MockMvc mockMvc) {
@@ -49,7 +50,7 @@ public class AdminUsersControllerTests {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(jsonObject.toString()))
                 .andExpect(status().isOk())
-                .andExpect(header().exists("Authorization"));
+                .andExpect(cookie().exists("Authentication"));
     }
 
     @Test
@@ -60,7 +61,7 @@ public class AdminUsersControllerTests {
                 .put("change", "PROMOTE");
 
         mockMvc.perform(MockMvcRequestBuilders.post(baseUrl + "/roleChange")
-                        .header("Authorization", "Bearer " + token)
+                        .cookie(cookie)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(data.toString()))
                 .andExpect(status().isOk());
@@ -70,7 +71,7 @@ public class AdminUsersControllerTests {
     @Order(3)
     public void shouldGetAllMods() throws Exception {
         mockMvc.perform(MockMvcRequestBuilders.get(baseUrl + "/mods")
-                        .header("Authorization", "Bearer " + token))
+                        .cookie(cookie))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$..username", Matchers.hasItem("usernames")));
     }
@@ -83,13 +84,13 @@ public class AdminUsersControllerTests {
                 .put("change", "DEMOTE");
 
         mockMvc.perform(MockMvcRequestBuilders.post(baseUrl + "/roleChange")
-                        .header("Authorization", "Bearer " + token)
+                        .cookie(cookie)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(data.toString()))
                 .andExpect(status().isOk());
 
         mockMvc.perform(MockMvcRequestBuilders.get(baseUrl + "/users")
-                        .header("Authorization", "Bearer " + token))
+                        .cookie(cookie))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$..username", Matchers.hasItem("usernames")));
     }

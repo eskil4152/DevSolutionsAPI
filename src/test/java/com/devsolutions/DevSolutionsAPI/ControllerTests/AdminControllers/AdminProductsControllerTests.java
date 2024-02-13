@@ -2,6 +2,7 @@ package com.devsolutions.DevSolutionsAPI.ControllerTests.AdminControllers;
 
 import com.devsolutions.DevSolutionsAPI.Enums.UserRole;
 import com.devsolutions.DevSolutionsAPI.Security.JwtUtil;
+import jakarta.servlet.http.Cookie;
 import org.hamcrest.Matchers;
 import org.json.JSONObject;
 import org.junit.jupiter.api.*;
@@ -27,8 +28,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 public class AdminProductsControllerTests {
     private final MockMvc mockMvc;
 
-    private final String authToken = "Bearer " + JwtUtil.generateToken("Admin", UserRole.ADMIN);
-    private final String authTokenUser = "Bearer " + JwtUtil.generateToken("User", UserRole.USER);
+    Cookie adminCookie = new Cookie("Authentication", JwtUtil.generateToken("Admin", UserRole.ADMIN));
+    Cookie userCookie = new Cookie("Authentication", JwtUtil.generateToken("User", UserRole.USER));
 
     @Autowired
     public AdminProductsControllerTests(MockMvc mockMvc) {
@@ -41,7 +42,7 @@ public class AdminProductsControllerTests {
     @Order(1)
     public void shouldFailAsUnauthorized() throws Exception {
         mockMvc.perform(MockMvcRequestBuilders.get(baseUrl + "/all")
-                        .header("Authorization", authTokenUser))
+                        .cookie(userCookie))
                 .andExpect(status().is4xxClientError());
     }
 
@@ -56,7 +57,7 @@ public class AdminProductsControllerTests {
         mockMvc.perform(MockMvcRequestBuilders.post(baseUrl + "/new")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(object.toString())
-                        .header("Authorization", authToken))
+                        .cookie(adminCookie))
                 .andExpect(status().isOk());
     }
 
@@ -64,7 +65,7 @@ public class AdminProductsControllerTests {
     @Order(3)
     public void shouldGetAllProducts() throws Exception {
         mockMvc.perform(MockMvcRequestBuilders.get(baseUrl + "/all")
-                    .header("Authorization", authToken))
+                    .cookie(adminCookie))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$[0].name", Matchers.containsString("Product One")))
                 .andExpect(jsonPath("$[1].name", Matchers.containsString("Product Two")))
@@ -86,7 +87,7 @@ public class AdminProductsControllerTests {
         mockMvc.perform(MockMvcRequestBuilders.post(baseUrl + "/new")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(object.toString())
-                        .header("Authorization", authToken))
+                        .cookie(adminCookie))
                 .andExpect(status().isOk());
     }
 
@@ -95,11 +96,11 @@ public class AdminProductsControllerTests {
     public void shouldDeleteProduct() throws Exception {
         mockMvc.perform(MockMvcRequestBuilders.delete(baseUrl + "/delete/6")
                 .contentType(MediaType.APPLICATION_JSON)
-                .header("Authorization", authToken))
+                        .cookie(adminCookie))
                 .andExpect(status().isOk());
 
         MvcResult result = mockMvc.perform(MockMvcRequestBuilders.get(baseUrl + "/all")
-                .header("Authorization", authToken))
+                        .cookie(adminCookie))
                 .andReturn();
 
         String responseBody = result.getResponse().getContentAsString();
@@ -118,7 +119,7 @@ public class AdminProductsControllerTests {
     public void shouldFailToDelete() throws Exception {
         mockMvc.perform(MockMvcRequestBuilders.delete(baseUrl + "/delete/6")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .header("Authorization", authToken))
+                        .cookie(adminCookie))
                 .andExpect(status().is4xxClientError());
     }
 }

@@ -7,7 +7,6 @@ import com.devsolutions.DevSolutionsAPI.Security.JwtUtil;
 import com.devsolutions.DevSolutionsAPI.RequestBodies.LoginRequest;
 import com.devsolutions.DevSolutionsAPI.Services.UserService;
 import com.devsolutions.DevSolutionsAPI.Tools.CheckCookie;
-import com.devsolutions.DevSolutionsAPI.Tools.CheckJwt;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -43,11 +42,10 @@ public class UserController {
         UserRole role = user.get().getRole();
         String token = JwtUtil.generateToken(username, role);
 
-        Cookie cookie = new Cookie("AuthCookie", token);
+        Cookie cookie = new Cookie("Authentication", token);
         cookie.setPath("/");
         cookie.setMaxAge(3600);
         cookie.setSecure(true);
-        cookie.setSecure(false);
         cookie.setHttpOnly(true);
 
         response.addCookie(cookie);
@@ -70,11 +68,10 @@ public class UserController {
 
         String token = JwtUtil.generateToken(username, UserRole.USER);
 
-        Cookie cookie = new Cookie("AuthCookie", token);
+        Cookie cookie = new Cookie("Authentication", token);
         cookie.setPath("/");
         cookie.setMaxAge(3600);
         cookie.setSecure(true);
-        cookie.setSecure(false);
         cookie.setHttpOnly(true);
 
         response.addCookie(cookie);

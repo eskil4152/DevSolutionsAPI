@@ -2,6 +2,7 @@ package com.devsolutions.DevSolutionsAPI.ControllerTests;
 
 import com.devsolutions.DevSolutionsAPI.Enums.UserRole;
 import com.devsolutions.DevSolutionsAPI.Security.JwtUtil;
+import jakarta.servlet.http.Cookie;
 import org.hamcrest.Matchers;
 import org.json.JSONObject;
 import org.junit.jupiter.api.MethodOrderer;
@@ -29,8 +30,8 @@ public class OwnerControllerTests {
 
     private final String baseUrl = "http://localhost:8080/api/admin";
 
-    private final String ownerToken = JwtUtil.generateToken("owner", UserRole.OWNER);
-    private final String adminToken = JwtUtil.generateToken("admin", UserRole.ADMIN);
+    private final Cookie ownerCookie = new Cookie("Authentication", JwtUtil.generateToken("owner", UserRole.OWNER));
+    private final Cookie adminCookie = new Cookie("Authentication", JwtUtil.generateToken("admin", UserRole.ADMIN));
 
     @Autowired
     public OwnerControllerTests(MockMvc mockMvc) {
@@ -65,19 +66,19 @@ public class OwnerControllerTests {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(ownerO.toString()))
                 .andExpect(status().isOk())
-                .andExpect(header().exists("Authorization"));
+                .andExpect(cookie().exists("Authentication"));
 
         mockMvc.perform(MockMvcRequestBuilders.post("http://localhost:8080/api/register")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(adminO.toString()))
                 .andExpect(status().isOk())
-                .andExpect(header().exists("Authorization"));
+                .andExpect(cookie().exists("Authentication"));
 
         mockMvc.perform(MockMvcRequestBuilders.post("http://localhost:8080/api/register")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(userO.toString()))
                 .andExpect(status().isOk())
-                .andExpect(header().exists("Authorization"));
+                .andExpect(cookie().exists("Authentication"));
     }
 
     @Test
@@ -88,13 +89,13 @@ public class OwnerControllerTests {
                 .put("change", "PROMOTE");
 
         mockMvc.perform(MockMvcRequestBuilders.post(baseUrl + "/roleChange")
-                        .header("Authorization", "Bearer " + ownerToken)
+                        .cookie(ownerCookie)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(data.toString()))
                 .andExpect(status().isOk());
 
         mockMvc.perform(MockMvcRequestBuilders.get(baseUrl + "/mods")
-                        .header("Authorization", "Bearer " + ownerToken))
+                        .cookie(ownerCookie))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$..username", Matchers.contains("motionUser")));
     }
@@ -107,7 +108,7 @@ public class OwnerControllerTests {
                 .put("change", "PROMOTE");
 
         mockMvc.perform(MockMvcRequestBuilders.post(baseUrl + "/roleChange")
-                        .header("Authorization", "Bearer " + adminToken)
+                        .cookie(adminCookie)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(data.toString()))
                 .andExpect(status().is4xxClientError());
@@ -121,13 +122,13 @@ public class OwnerControllerTests {
                 .put("change", "PROMOTE");
 
         mockMvc.perform(MockMvcRequestBuilders.post(baseUrl + "/roleChange")
-                        .header("Authorization", "Bearer " + ownerToken)
+                        .cookie(ownerCookie)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(data.toString()))
                 .andExpect(status().isOk());
 
         mockMvc.perform(MockMvcRequestBuilders.get("http://localhost:8080/api/owner/admins")
-                        .header("Authorization", "Bearer " + ownerToken))
+                        .cookie(ownerCookie))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$..username", Matchers.contains("motionUser")));
     }
@@ -140,7 +141,7 @@ public class OwnerControllerTests {
                 .put("change", "DEMOTE");
 
         mockMvc.perform(MockMvcRequestBuilders.post(baseUrl + "/roleChange")
-                        .header("Authorization", "Bearer " + adminToken)
+                        .cookie(adminCookie)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(data.toString()))
                 .andExpect(status().is4xxClientError());
@@ -154,13 +155,13 @@ public class OwnerControllerTests {
                 .put("change", "DEMOTE");
 
         mockMvc.perform(MockMvcRequestBuilders.post(baseUrl + "/roleChange")
-                        .header("Authorization", "Bearer " + ownerToken)
+                        .cookie(ownerCookie)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(data.toString()))
                 .andExpect(status().isOk());
 
         mockMvc.perform(MockMvcRequestBuilders.get(baseUrl + "/mods")
-                        .header("Authorization", "Bearer " + ownerToken))
+                        .cookie(ownerCookie))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$..username", Matchers.contains("motionUser")));
     }

@@ -2,6 +2,7 @@ package com.devsolutions.DevSolutionsAPI.ControllerTests;
 
 import com.devsolutions.DevSolutionsAPI.Enums.UserRole;
 import com.devsolutions.DevSolutionsAPI.Security.JwtUtil;
+import jakarta.servlet.http.Cookie;
 import org.hamcrest.Matchers;
 import org.json.JSONObject;
 import org.junit.jupiter.api.*;
@@ -46,7 +47,7 @@ public class UserControllerTests {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(jsonObject.toString()))
                 .andExpect(status().isOk())
-                .andExpect(header().exists("Authorization"));
+                .andExpect(cookie().exists("Authentication"));
     }
 
     @Test
@@ -68,23 +69,22 @@ public class UserControllerTests {
     @Test
     @Order(3)
     public void shouldLogInAndGetUserInfo() throws Exception {
+        Cookie cookie = new Cookie("Authentication", JwtUtil.generateToken("testuser", UserRole.USER));
+
         JSONObject jsonObject = new JSONObject()
                 .put("username", "testuser")
                 .put("password", "testpass");
 
-        MvcResult mvcResult = mockMvc.perform(MockMvcRequestBuilders.post(baseUrl + "/login")
+        mockMvc.perform(MockMvcRequestBuilders.post(baseUrl + "/login")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(jsonObject.toString()))
                 .andExpect(status().isOk())
-                .andExpect(header().exists("Authorization"))
+                .andExpect(cookie().exists("Authentication"))
                 .andReturn();
-
-        String header = mvcResult.getResponse().getHeader("Authorization");
-        System.out.println("HEADER DATA: " + header);
 
         mockMvc.perform(MockMvcRequestBuilders.get(baseUrl + "/user")
                 .contentType(MediaType.APPLICATION_JSON)
-                .header("Authorization", header))
+                .cookie(cookie))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.username", Matchers.containsString("testuser")));
     }
