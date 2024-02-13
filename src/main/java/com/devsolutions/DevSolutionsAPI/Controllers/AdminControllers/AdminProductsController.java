@@ -33,7 +33,7 @@ public class AdminProductsController {
     public ResponseEntity<Optional<List<Products>>> getAllProductsAdmin(HttpServletRequest request){
         Optional<UserRole> role = checkCookie.CheckCookieForRole(request);
 
-        if (role.isEmpty() || role.get() != UserRole.ADMIN)
+        if (role.isEmpty() || (role.get() != UserRole.ADMIN && role.get() != UserRole.OWNER))
             return ResponseEntity.status(401).body(Optional.empty());
 
         return ResponseEntity.ok(Optional.ofNullable(productService.getAllProducts()));
@@ -43,7 +43,7 @@ public class AdminProductsController {
     public ResponseEntity<Optional<Products>> addProduct(@RequestBody ProductsRequest productsRequest, HttpServletRequest request){
         Optional<UserRole> role = checkCookie.CheckCookieForRole(request);
 
-        if (role.isEmpty() || role.get() != UserRole.ADMIN)
+        if (role.isEmpty() || (role.get() != UserRole.ADMIN && role.get() != UserRole.OWNER))
             return ResponseEntity.status(401).body(Optional.empty());
 
         Optional<Products> products = productService.saveProduct(productsRequest);
@@ -58,7 +58,7 @@ public class AdminProductsController {
     public ResponseEntity<Optional<Products>> updateProduct(@RequestBody ProductsRequest productsRequest, HttpServletRequest request){
         Optional<UserRole> role = checkCookie.CheckCookieForRole(request);
 
-        if (role.isEmpty() || role.get() != UserRole.ADMIN)
+        if (role.isEmpty() || (role.get() != UserRole.ADMIN && role.get() != UserRole.OWNER))
             return ResponseEntity.status(401).body(Optional.empty());
 
         Optional<Products> products = productService.updateProduct(productsRequest);
@@ -73,7 +73,7 @@ public class AdminProductsController {
     public ResponseEntity<?> deleteProduct(@PathVariable String id, HttpServletRequest request){
         Optional<UserRole> role = checkCookie.CheckCookieForRole(request);
 
-        if (role.isEmpty() || role.get() != UserRole.ADMIN)
+        if (role.isEmpty() || (role.get() != UserRole.ADMIN && role.get() != UserRole.OWNER))
             return ResponseEntity.status(401).body(Optional.empty());
 
         boolean didDelete = productService.deleteProduct(Long.parseLong(id));
