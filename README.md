@@ -1,6 +1,6 @@
 # DevSolutions API / Backend #
 
-![Coverage](https://img.shields.io/static/v1?label=Coverage&message=%COVERAGE%%&color=brightgreen)
+[![Coverage Status](https://coveralls.io/repos/github/eskil4152/DevSolutionsAPI/badge.svg?branch=main)](https://coveralls.io/github/eskil4152/DevSolutionsAPI?branch=main)
 
 The server for DevSolutions website and services
 
