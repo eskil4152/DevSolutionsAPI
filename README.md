@@ -1,5 +1,7 @@
 # DevSolutions API / Backend #
 
+![Coverage](https://img.shields.io/static/v1?label=Coverage&message=%COVERAGE%25&color=brightgreen)
+
 The server for DevSolutions website and services
 
 ## HTTP Response Codes Used ##
