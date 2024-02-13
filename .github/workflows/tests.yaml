@@ -69,5 +69,6 @@ jobs:
           echo "Coverage badge URL: ${{ steps.get-badge-url.outputs.url }}"
 
       - name: Replace coverage placeholder in README.md
-        run: sed -i "s/%COVERAGE%/${{ steps.extract-coverage.outputs.coverage }}/g" README.md
-        working-directory: ${{ github.workspace }}
+        run: sed -i "s/%COVERAGE%/${{ steps.extract-coverage.outputs.coverage }}/g" ../README.md
+        working-directory: ${{ github.workspace }}/.github/workflows
+
