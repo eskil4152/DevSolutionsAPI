@@ -92,7 +92,7 @@ public class OrderControllerTests {
     @Test
     @Order(4)
     public void shouldGetSpecificOrderFromUser() throws Exception {
-        mockMvc.perform(MockMvcRequestBuilders.get(baseUrl + "/1")
+        mockMvc.perform(MockMvcRequestBuilders.get(baseUrl + "/" + orderId.intValue())
                         .header("Authorization", token))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("id", Matchers.is(orderId.intValue())))
