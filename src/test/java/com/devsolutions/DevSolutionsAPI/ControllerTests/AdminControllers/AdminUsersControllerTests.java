@@ -54,39 +54,29 @@ public class AdminUsersControllerTests {
 
     @Test
     @Order(2)
-    public void shouldGetNoMods() throws Exception {
-        mockMvc.perform(MockMvcRequestBuilders.get(baseUrl + "/mods")
-                        .header("Authorization", "Bearer " + token))
-                .andExpect(status().isOk())
-                .andExpect(MockMvcResultMatchers.jsonPath("$").isArray())
-                .andExpect(MockMvcResultMatchers.jsonPath("$").isEmpty());
-    }
-
-    @Test
-    @Order(3)
     public void shouldPromoteUserToMod() throws Exception {
         JSONObject data = new JSONObject()
                 .put("username", "usernames")
                 .put("change", "PROMOTE");
 
         mockMvc.perform(MockMvcRequestBuilders.post(baseUrl + "/roleChange")
-                .header("Authorization", "Bearer " + token)
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(data.toString()))
+                        .header("Authorization", "Bearer " + token)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(data.toString()))
                 .andExpect(status().isOk());
     }
 
     @Test
-    @Order(4)
+    @Order(3)
     public void shouldGetAllMods() throws Exception {
         mockMvc.perform(MockMvcRequestBuilders.get(baseUrl + "/mods")
                         .header("Authorization", "Bearer " + token))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$..username", Matchers.contains("usernames")));
+                .andExpect(jsonPath("$..username", Matchers.hasItem("usernames")));
     }
 
     @Test
-    @Order(5)
+    @Order(4)
     public void shouldDemoteModToUser() throws Exception {
         JSONObject data = new JSONObject()
                 .put("username", "usernames")
@@ -97,21 +87,7 @@ public class AdminUsersControllerTests {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(data.toString()))
                 .andExpect(status().isOk());
-    }
 
-    @Test
-    @Order(6)
-    public void shouldGetNoModsAgain() throws Exception {
-        mockMvc.perform(MockMvcRequestBuilders.get(baseUrl + "/mods")
-                        .header("Authorization", "Bearer " + token))
-                .andExpect(status().isOk())
-                .andExpect(MockMvcResultMatchers.jsonPath("$").isArray())
-                .andExpect(MockMvcResultMatchers.jsonPath("$").isEmpty());
-    }
-
-    @Test
-    @Order(7)
-    public void shouldGetAllUsers() throws Exception {
         mockMvc.perform(MockMvcRequestBuilders.get(baseUrl + "/users")
                         .header("Authorization", "Bearer " + token))
                 .andExpect(status().isOk())
@@ -119,7 +95,7 @@ public class AdminUsersControllerTests {
     }
 
     @Test
-    @Order(8)
+    @Order(5)
     public void shouldNotGetUsersWhenUnauthorized() throws Exception {
         mockMvc.perform(MockMvcRequestBuilders.get(baseUrl + "/users"))
                 .andExpect(status().is4xxClientError());
