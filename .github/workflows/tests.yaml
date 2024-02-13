@@ -3,7 +3,7 @@ name: Build, Test, and Check Coverage
 on:
   push:
     branches:
-      - work
+      - main
 
 jobs:
   build-and-test:
