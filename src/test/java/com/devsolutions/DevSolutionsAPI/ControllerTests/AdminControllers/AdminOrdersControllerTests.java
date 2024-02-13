@@ -1,7 +1,9 @@
 package com.devsolutions.DevSolutionsAPI.ControllerTests.AdminControllers;
 
+import com.devsolutions.DevSolutionsAPI.Entities.Orders;
 import com.devsolutions.DevSolutionsAPI.Enums.UserRole;
 import com.devsolutions.DevSolutionsAPI.Security.JwtUtil;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.hamcrest.Matchers;
 import org.json.JSONObject;
 import org.junit.jupiter.api.*;
@@ -12,6 +14,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -25,9 +28,11 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 public class AdminOrdersControllerTests {
     private final MockMvc mockMvc;
 
-    private final String baseUrl = "http://localhost:8080/api/order";
+    private final String baseUrl = "http://localhost:8080/api/admin/order";
     private final String token = "Bearer " + JwtUtil.generateToken("orderuseradmin", UserRole.USER);
-    private final String tokenAdmin = "Bearer " + JwtUtil.generateToken("orderAdmin", UserRole.USER);
+    private final String tokenAdmin = "Bearer " + JwtUtil.generateToken("orderAdmin", UserRole.ADMIN);
+
+    private Long orderId;
 
     @Autowired
     public AdminOrdersControllerTests(MockMvc mockMvc) {
@@ -36,7 +41,6 @@ public class AdminOrdersControllerTests {
 
     @Test
     @Order(1)
-    @Disabled
     public void shouldCreateNewAdmin() throws Exception {
         JSONObject jsonObject = new JSONObject()
                 .put("firstname", "order")
@@ -55,7 +59,6 @@ public class AdminOrdersControllerTests {
 
     @Test
     @Order(2)
-    @Disabled
     public void shouldCreateNewUserAndPlaceOrder() throws Exception {
         JSONObject jsonObject = new JSONObject()
                 .put("firstname", "order")
@@ -77,33 +80,29 @@ public class AdminOrdersControllerTests {
                 .put("paymentMethod", "VISA")
                 .put("billingAddress", "Address");
 
-        mockMvc.perform(MockMvcRequestBuilders.post(baseUrl + "/new")
+        MvcResult result = mockMvc.perform(MockMvcRequestBuilders.post("http://localhost:8080/api/order/new")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(order.toString())
                         .header("Authorization", token))
-                .andExpect(status().isOk());
-    }
+                .andExpect(status().isOk())
+                .andReturn();
 
-    @Test
-    @Order(2)
-    @Disabled
-    public void shouldGetAllOrders() throws Exception {
-        JSONObject jsonObject = new JSONObject()
-                .put("productId","1")
-                .put("price", 199)
-                .put("notes", "")
-                .put("paymentMethod", "VISA")
-                .put("billingAddress", "Address");
+        Orders orderResponse = new ObjectMapper().readValue(result.getResponse().getContentAsString(), Orders.class);
 
-        mockMvc.perform(MockMvcRequestBuilders.post(baseUrl + "/new")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(jsonObject.toString())
-                        .header("Authorization", token))
-                .andExpect(status().isOk());
+       orderId = orderResponse.getId();
     }
 
     @Test
     @Order(3)
+    public void shouldGetAllOrders() throws Exception {
+        mockMvc.perform(MockMvcRequestBuilders.get(baseUrl + "/all")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .header("Authorization", tokenAdmin))
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    @Order(4)
     @Disabled
     public void shouldUpdateAnOrder() throws Exception {
         mockMvc.perform(MockMvcRequestBuilders.get(baseUrl + "/all")
@@ -118,7 +117,7 @@ public class AdminOrdersControllerTests {
     }
 
     @Test
-    @Order(4)
+    @Order(5)
     @Disabled
     public void shouldCancelAnOrder() throws Exception {
         mockMvc.perform(MockMvcRequestBuilders.get(baseUrl + "/1")
@@ -133,25 +132,15 @@ public class AdminOrdersControllerTests {
     }
 
     @Test
-    @Order(5)
-    @Disabled
+    @Order(6)
     public void shouldFailToGetAllOrders() throws Exception {
-        JSONObject jsonObject = new JSONObject()
-                .put("productId","1000")
-                .put("price", 199)
-                .put("notes", "")
-                .put("paymentMethod", "VISA")
-                .put("billingAddress", "Address");
-
-        mockMvc.perform(MockMvcRequestBuilders.post(baseUrl + "/new")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(jsonObject.toString())
-                        .header("Authorization", token))
+        mockMvc.perform(MockMvcRequestBuilders.get(baseUrl + "/all")
+                        .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().is4xxClientError());
     }
 
     @Test
-    @Order(6)
+    @Order(7)
     @Disabled
     public void shouldFailToUpdateOrderWhenUnauthorized() throws Exception {
         JSONObject jsonObject = new JSONObject()
@@ -168,7 +157,7 @@ public class AdminOrdersControllerTests {
     }
 
     @Test
-    @Order(7)
+    @Order(8)
     @Disabled
     public void shouldFailToUpdateNonExistingOrder() throws Exception {
         mockMvc.perform(MockMvcRequestBuilders.get(baseUrl + "/all"))
@@ -176,7 +165,7 @@ public class AdminOrdersControllerTests {
     }
 
     @Test
-    @Order(8)
+    @Order(9)
     @Disabled
     public void shouldFailToCancelOrderWhenUnauthorized() throws Exception {
         mockMvc.perform(MockMvcRequestBuilders.get(baseUrl + "/1"))
@@ -184,7 +173,7 @@ public class AdminOrdersControllerTests {
     }
 
     @Test
-    @Order(9)
+    @Order(10)
     @Disabled
     public void shouldFailToCancelNonExistingOrder() throws Exception {
         JSONObject jsonObject = new JSONObject()
@@ -199,23 +188,5 @@ public class AdminOrdersControllerTests {
                         .content(jsonObject.toString()))
                 .andExpect(status().isOk())
                 .andExpect(header().exists("Authorization"));
-    }
-
-    @Test
-    @Order(10)
-    @Disabled
-    public void shouldFailToGetSpecificOrderFromAnotherUser() throws Exception {
-        mockMvc.perform(MockMvcRequestBuilders.get(baseUrl + "/1")
-                        .header("Authorization", tokenAdmin))
-                .andExpect(status().is4xxClientError());
-    }
-
-    @Test
-    @Order(11)
-    @Disabled
-    public void shouldFailToGetNonExistingOrder() throws Exception {
-        mockMvc.perform(MockMvcRequestBuilders.get(baseUrl + "/100")
-                        .header("Authorization", token))
-                .andExpect(status().is4xxClientError());
     }
 }
