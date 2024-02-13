@@ -73,5 +73,5 @@ jobs:
           echo "Coverage value: ${{ steps.extract-coverage.outputs.coverage }}"
 
       - name: Replace coverage placeholder in README.md
-        run: sed -i "s/%COVERAGE%/${{ steps.extract-coverage.outputs.coverage }}/g" README.md
+        run: sed "s/%COVERAGE%/${{ steps.extract-coverage.outputs.coverage }}/g" README.md
         working-directory: ${{ github.workspace }}
