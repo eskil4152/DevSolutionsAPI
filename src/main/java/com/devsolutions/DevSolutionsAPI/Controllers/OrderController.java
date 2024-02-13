@@ -6,6 +6,7 @@ import com.devsolutions.DevSolutionsAPI.RequestBodies.OrderRequest;
 import com.devsolutions.DevSolutionsAPI.Services.OrderService;
 import com.devsolutions.DevSolutionsAPI.Services.UserOrderService;
 import com.devsolutions.DevSolutionsAPI.Services.UserService;
+import com.devsolutions.DevSolutionsAPI.Tools.CheckCookie;
 import com.devsolutions.DevSolutionsAPI.Tools.CheckJwt;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.http.ResponseEntity;
@@ -17,23 +18,24 @@ import java.util.Optional;
 @RestController
 @RequestMapping("/api/order")
 public class OrderController {
-
     private final OrderService orderService;
     private final UserOrderService userOrderService;
     private final UserService userService;
-    private final CheckJwt checkJwt;
+
+    private final CheckCookie checkCookie;
 
     public OrderController(OrderService orderService, UserOrderService userOrderService, UserService userService){
         this.orderService = orderService;
         this.userOrderService = userOrderService;
         this.userService = userService;
-        this.checkJwt = new CheckJwt(userService);
+
+        this.checkCookie = new CheckCookie(userService);
     }
 
     // Makes a new order, provided user and product is provided and exists
     @PostMapping("/new")
     public ResponseEntity<Optional<Orders>> createNewOrder(@RequestBody OrderRequest orderRequest, HttpServletRequest request){
-        Optional<Users> user = checkJwt.checkJwtForUser(request);
+        Optional<Users> user = checkCookie.CheckCookieForUser(request);
 
         if (user.isEmpty()){
             return ResponseEntity.status(401).build();
@@ -50,12 +52,12 @@ public class OrderController {
     // Gets all orders a user has made
     @GetMapping("/all")
     public ResponseEntity<Optional<List<Orders>>> fetchOrderByUser(HttpServletRequest request){
-        Optional<Users> users = checkJwt.checkJwtForUser(request);
+        Optional<Users> user = checkCookie.CheckCookieForUser(request);
 
-        if (users.isEmpty())
+        if (user.isEmpty())
             return ResponseEntity.status(401).body(Optional.empty());
 
-        List<Orders> orders = orderService.getOrders(users.get());
+        List<Orders> orders = orderService.getOrders(user.get());
 
         return ResponseEntity.ok(Optional.ofNullable(orders));
     }
@@ -63,7 +65,7 @@ public class OrderController {
     // Gets order by id, checks if user exists, if order exists, and if order is made by the user
     @GetMapping("/{id}")
     public ResponseEntity<Optional<Orders>> getOneOrder(@PathVariable Long id, HttpServletRequest request){
-        Optional<Users> user = checkJwt.checkJwtForUser(request);
+        Optional<Users> user = checkCookie.CheckCookieForUser(request);
 
         if (user.isEmpty())
             return ResponseEntity.status(401).body(Optional.empty());

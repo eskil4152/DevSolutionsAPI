@@ -4,6 +4,8 @@ import com.devsolutions.DevSolutionsAPI.Entities.Orders;
 import com.devsolutions.DevSolutionsAPI.Enums.UserRole;
 import com.devsolutions.DevSolutionsAPI.Security.JwtUtil;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import jakarta.servlet.http.Cookie;
+import org.checkerframework.checker.units.qual.C;
 import org.hamcrest.Matchers;
 import org.json.JSONObject;
 import org.junit.jupiter.api.*;
@@ -51,6 +53,7 @@ public class AdminOrdersControllerTests {
 
         mockMvc.perform(MockMvcRequestBuilders.post("http://localhost:8080/api/register")
                         .contentType(MediaType.APPLICATION_JSON)
+                        .cookie()
                         .content(jsonObject.toString()))
                 .andExpect(status().isOk())
                 .andExpect(header().exists("Authorization"));

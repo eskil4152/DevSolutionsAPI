@@ -22,12 +22,10 @@ import java.util.Optional;
 public class UserController {
     private final UserService userService;
     private final CheckCookie checkCookie;
-    private final CheckJwt checkJwt;
 
     @Autowired
-    public UserController(UserService userService, CheckJwt checkJwt){
-        this.userService = userService;
-        this.checkJwt = checkJwt;
+    public UserController(UserService userService){
+        this.userService = userService;;
 
         this.checkCookie = new CheckCookie(userService);
     }
@@ -45,12 +43,10 @@ public class UserController {
         UserRole role = user.get().getRole();
         String token = JwtUtil.generateToken(username, role);
 
-        response.addHeader("Authorization", "Bearer " + token);
-
         Cookie cookie = new Cookie("AuthCookie", token);
         cookie.setPath("/");
         cookie.setMaxAge(3600);
-        //cookie.setSecure(true);
+        cookie.setSecure(true);
         cookie.setSecure(false);
         cookie.setHttpOnly(true);
 
@@ -74,12 +70,10 @@ public class UserController {
 
         String token = JwtUtil.generateToken(username, UserRole.USER);
 
-        response.addHeader("Authorization", "Bearer " + token);
-
         Cookie cookie = new Cookie("AuthCookie", token);
         cookie.setPath("/");
         cookie.setMaxAge(3600);
-        //cookie.setSecure(true);
+        cookie.setSecure(true);
         cookie.setSecure(false);
         cookie.setHttpOnly(true);
 
@@ -90,7 +84,7 @@ public class UserController {
 
     @GetMapping("/user")
     public ResponseEntity<Optional<UserCompact>> getUser(HttpServletRequest request){
-        Optional<Users> user = checkJwt.checkJwtForUser(request);
+        Optional<Users> user = checkCookie.CheckCookieForUser(request);
 
         if (user.isEmpty())
             return ResponseEntity.status(401).build();
