@@ -61,7 +61,7 @@ public class AdminUsersController {
         if (role.isEmpty() || role.get() != UserRole.ADMIN)
             return ResponseEntity.status(401).body(Optional.empty());
 
-        int res = userService.changeUserRole(changeRequest);
+        int res = userService.changeUserRole(changeRequest, role.get());
 
         return ResponseEntity.status(res).build();
     }
