@@ -65,8 +65,12 @@ public class UserService {
         return userRepository.findAllByRole(UserRole.MODERATOR);
     }
 
+    public Optional<List<Users>> getAllAdmins(){
+        return userRepository.findAllByRole(UserRole.ADMIN);
+    }
+
     @Transactional
-    public int changeUserRole(RoleChangeRequest request) {
+    public int changeUserRole(RoleChangeRequest request, UserRole role) {
         Optional<Users> userOptional = userRepository.findByUsername(request.getUsername());
 
         if (userOptional.isEmpty())
@@ -87,7 +91,11 @@ public class UserService {
                 break;
         }
 
-        System.out.println("Passing role " + newRole + " to user " + user.getUsername());
+        if (newRole == UserRole.ADMIN || currentRole == UserRole.ADMIN) {
+            if (!(role == UserRole.OWNER))
+                return 401;
+        }
+
         userRepository.changeUserRole(newRole, user);
 
         return 200;

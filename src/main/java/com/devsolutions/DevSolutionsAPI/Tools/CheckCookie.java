@@ -1,6 +1,7 @@
 package com.devsolutions.DevSolutionsAPI.Tools;
 
 import com.devsolutions.DevSolutionsAPI.Entities.Users;
+import com.devsolutions.DevSolutionsAPI.Enums.UserRole;
 import com.devsolutions.DevSolutionsAPI.Security.JwtUtil;
 import com.devsolutions.DevSolutionsAPI.Services.UserService;
 import io.jsonwebtoken.Claims;
@@ -48,5 +49,26 @@ public class CheckCookie {
         }
 
         return cookieUser;
+    }
+
+    public Optional<UserRole> CheckCookieForRole(HttpServletRequest request){
+        Cookie[] cookies = request.getCookies();
+
+        if (cookies == null) {
+            System.out.println("Null cookie");
+            return Optional.empty();
+        }
+
+        for (Cookie cookie : cookies) {
+            if (cookie.getName().equals("Authentication")) {
+                Claims claims = JwtUtil.parseToken(cookie.getValue());
+
+                UserRole role = UserRole.valueOf(claims.get("role", String.class));
+
+                return Optional.of(role);
+            }
+        }
+
+        return Optional.empty();
     }
 }

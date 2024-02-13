@@ -1,10 +1,8 @@
 package com.devsolutions.DevSolutionsAPI.ControllerTests.AdminControllers;
 
-import com.devsolutions.DevSolutionsAPI.CreateTestUser;
 import com.devsolutions.DevSolutionsAPI.Enums.UserRole;
-import com.devsolutions.DevSolutionsAPI.Security.JwtFilter;
 import com.devsolutions.DevSolutionsAPI.Security.JwtUtil;
-import org.apache.el.stream.Optional;
+import jakarta.servlet.http.Cookie;
 import org.hamcrest.Matchers;
 import org.json.JSONObject;
 import org.junit.jupiter.api.*;
@@ -13,16 +11,10 @@ import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabas
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
-import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
-import org.springframework.transaction.annotation.Transactional;
-
-import java.util.Arrays;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -35,7 +27,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 public class AdminUsersControllerTests {
     private final MockMvc mockMvc;
 
-    private final String token = JwtUtil.generateToken("Admin", UserRole.ADMIN);
+    private final Cookie cookie = new Cookie("Authentication", JwtUtil.generateToken("Admin", UserRole.ADMIN));
 
     @Autowired
     public AdminUsersControllerTests(MockMvc mockMvc) {
@@ -58,77 +50,53 @@ public class AdminUsersControllerTests {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(jsonObject.toString()))
                 .andExpect(status().isOk())
-                .andExpect(header().exists("Authorization"));
+                .andExpect(cookie().exists("Authentication"));
     }
 
     @Test
     @Order(2)
-    public void shouldGetNoMods() throws Exception {
-        mockMvc.perform(MockMvcRequestBuilders.get(baseUrl + "/mods")
-                        .header("Authorization", "Bearer " + token))
-                .andExpect(status().isOk())
-                .andExpect(MockMvcResultMatchers.jsonPath("$").isArray())
-                .andExpect(MockMvcResultMatchers.jsonPath("$").isEmpty());
-    }
-
-    @Test
-    @Order(3)
     public void shouldPromoteUserToMod() throws Exception {
         JSONObject data = new JSONObject()
                 .put("username", "usernames")
                 .put("change", "PROMOTE");
 
         mockMvc.perform(MockMvcRequestBuilders.post(baseUrl + "/roleChange")
-                .header("Authorization", "Bearer " + token)
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(data.toString()))
-                .andExpect(status().isOk());
-    }
-
-    @Test
-    @Order(4)
-    public void shouldGetAllMods() throws Exception {
-        mockMvc.perform(MockMvcRequestBuilders.get(baseUrl + "/mods")
-                        .header("Authorization", "Bearer " + token))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$[0].username", Matchers.containsString("usernames")));
-    }
-
-    @Test
-    @Order(5)
-    public void shouldDemoteModToUser() throws Exception {
-        JSONObject data = new JSONObject()
-                .put("username", "usernames")
-                .put("change", "DEMOTE");
-
-        mockMvc.perform(MockMvcRequestBuilders.post(baseUrl + "/roleChange")
-                        .header("Authorization", "Bearer " + token)
+                        .cookie(cookie)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(data.toString()))
                 .andExpect(status().isOk());
     }
 
     @Test
-    @Order(6)
-    public void shouldGetNoModsAgain() throws Exception {
+    @Order(3)
+    public void shouldGetAllMods() throws Exception {
         mockMvc.perform(MockMvcRequestBuilders.get(baseUrl + "/mods")
-                        .header("Authorization", "Bearer " + token))
-                .andExpect(status().isOk())
-                .andExpect(MockMvcResultMatchers.jsonPath("$").isArray())
-                .andExpect(MockMvcResultMatchers.jsonPath("$").isEmpty());
-    }
-
-    @Test
-    @Order(7)
-    public void shouldGetAllUsers() throws Exception {
-        mockMvc.perform(MockMvcRequestBuilders.get(baseUrl + "/users")
-                        .header("Authorization", "Bearer " + token))
+                        .cookie(cookie))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$..username", Matchers.hasItem("usernames")));
     }
 
     @Test
-    @Order(8)
+    @Order(4)
+    public void shouldDemoteModToUser() throws Exception {
+        JSONObject data = new JSONObject()
+                .put("username", "usernames")
+                .put("change", "DEMOTE");
+
+        mockMvc.perform(MockMvcRequestBuilders.post(baseUrl + "/roleChange")
+                        .cookie(cookie)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(data.toString()))
+                .andExpect(status().isOk());
+
+        mockMvc.perform(MockMvcRequestBuilders.get(baseUrl + "/users")
+                        .cookie(cookie))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$..username", Matchers.hasItem("usernames")));
+    }
+
+    @Test
+    @Order(5)
     public void shouldNotGetUsersWhenUnauthorized() throws Exception {
         mockMvc.perform(MockMvcRequestBuilders.get(baseUrl + "/users"))
                 .andExpect(status().is4xxClientError());

@@ -7,7 +7,6 @@ import com.devsolutions.DevSolutionsAPI.Security.JwtUtil;
 import com.devsolutions.DevSolutionsAPI.RequestBodies.LoginRequest;
 import com.devsolutions.DevSolutionsAPI.Services.UserService;
 import com.devsolutions.DevSolutionsAPI.Tools.CheckCookie;
-import com.devsolutions.DevSolutionsAPI.Tools.CheckJwt;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -22,12 +21,10 @@ import java.util.Optional;
 public class UserController {
     private final UserService userService;
     private final CheckCookie checkCookie;
-    private final CheckJwt checkJwt;
 
     @Autowired
-    public UserController(UserService userService, CheckJwt checkJwt){
-        this.userService = userService;
-        this.checkJwt = checkJwt;
+    public UserController(UserService userService){
+        this.userService = userService;;
 
         this.checkCookie = new CheckCookie(userService);
     }
@@ -45,13 +42,10 @@ public class UserController {
         UserRole role = user.get().getRole();
         String token = JwtUtil.generateToken(username, role);
 
-        response.addHeader("Authorization", "Bearer " + token);
-
-        Cookie cookie = new Cookie("AuthCookie", token);
+        Cookie cookie = new Cookie("Authentication", token);
         cookie.setPath("/");
         cookie.setMaxAge(3600);
-        //cookie.setSecure(true);
-        cookie.setSecure(false);
+        cookie.setSecure(true);
         cookie.setHttpOnly(true);
 
         response.addCookie(cookie);
@@ -74,13 +68,10 @@ public class UserController {
 
         String token = JwtUtil.generateToken(username, UserRole.USER);
 
-        response.addHeader("Authorization", "Bearer " + token);
-
-        Cookie cookie = new Cookie("AuthCookie", token);
+        Cookie cookie = new Cookie("Authentication", token);
         cookie.setPath("/");
         cookie.setMaxAge(3600);
-        //cookie.setSecure(true);
-        cookie.setSecure(false);
+        cookie.setSecure(true);
         cookie.setHttpOnly(true);
 
         response.addCookie(cookie);
@@ -90,7 +81,7 @@ public class UserController {
 
     @GetMapping("/user")
     public ResponseEntity<Optional<UserCompact>> getUser(HttpServletRequest request){
-        Optional<Users> user = checkJwt.checkJwtForUser(request);
+        Optional<Users> user = checkCookie.CheckCookieForUser(request);
 
         if (user.isEmpty())
             return ResponseEntity.status(401).build();

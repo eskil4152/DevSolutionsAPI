@@ -4,6 +4,7 @@ import com.devsolutions.DevSolutionsAPI.Entities.Orders;
 import com.devsolutions.DevSolutionsAPI.Enums.UserRole;
 import com.devsolutions.DevSolutionsAPI.Security.JwtUtil;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import jakarta.servlet.http.Cookie;
 import org.hamcrest.Matchers;
 import org.json.JSONObject;
 import org.junit.jupiter.api.*;
@@ -29,8 +30,9 @@ public class OrderControllerTests {
 
     private static Long orderId;
     private final String baseUrl = "http://localhost:8080/api/order";
-    private final String token = "Bearer " + JwtUtil.generateToken("orderuser", UserRole.USER);
-    private final String tokenTwo = "Bearer " + JwtUtil.generateToken("orderusertwo", UserRole.USER);
+
+    private final Cookie cookie = new Cookie("Authentication", JwtUtil.generateToken("orderuser", UserRole.USER));
+    private final Cookie cookieTwo = new Cookie("Authentication", JwtUtil.generateToken("orderusertwo", UserRole.USER));
 
     @Autowired
     public OrderControllerTests(MockMvc mockMvc) {
@@ -51,7 +53,7 @@ public class OrderControllerTests {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(jsonObject.toString()))
                 .andExpect(status().isOk())
-                .andExpect(header().exists("Authorization"));
+                .andExpect(cookie().exists("Authentication"));
     }
 
     @Test
@@ -67,7 +69,7 @@ public class OrderControllerTests {
         MvcResult result = mockMvc.perform(MockMvcRequestBuilders.post(baseUrl + "/new")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(jsonObject.toString())
-                        .header("Authorization", token))
+                        .cookie(cookie))
                 .andExpect(status().isOk())
                 .andReturn();
 
@@ -79,7 +81,7 @@ public class OrderControllerTests {
     @Order(3)
     public void shouldGetAllOrdersForUser() throws Exception {
         mockMvc.perform(MockMvcRequestBuilders.get(baseUrl + "/all")
-                        .header("Authorization", token))
+                        .cookie(cookie))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$[0].id", Matchers.is(orderId.intValue())))
                 .andExpect(jsonPath("$[0].price", Matchers.is(199.0)))
@@ -93,7 +95,7 @@ public class OrderControllerTests {
     @Order(4)
     public void shouldGetSpecificOrderFromUser() throws Exception {
         mockMvc.perform(MockMvcRequestBuilders.get(baseUrl + "/" + orderId.intValue())
-                        .header("Authorization", token))
+                        .cookie(cookie))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("id", Matchers.is(orderId.intValue())))
                 .andExpect(jsonPath("price", Matchers.is(199.0)))
@@ -116,7 +118,7 @@ public class OrderControllerTests {
         mockMvc.perform(MockMvcRequestBuilders.post(baseUrl + "/new")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(jsonObject.toString())
-                        .header("Authorization", token))
+                        .cookie(cookie))
                 .andExpect(status().is4xxClientError());
     }
 
@@ -164,14 +166,14 @@ public class OrderControllerTests {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(jsonObject.toString()))
                 .andExpect(status().isOk())
-                .andExpect(header().exists("Authorization"));
+                .andExpect(cookie().exists("Authentication"));
     }
 
     @Test
     @Order(10)
     public void shouldFailToGetSpecificOrderFromAnotherUser() throws Exception {
         mockMvc.perform(MockMvcRequestBuilders.get(baseUrl + "/1")
-                        .header("Authorization", tokenTwo))
+                        .cookie(cookieTwo))
                 .andExpect(status().is4xxClientError());
     }
 
@@ -179,7 +181,7 @@ public class OrderControllerTests {
     @Order(11)
     public void shouldFailToGetNonExistingOrder() throws Exception {
         mockMvc.perform(MockMvcRequestBuilders.get(baseUrl + "/100")
-                        .header("Authorization", token))
+                        .cookie(cookie))
                 .andExpect(status().is4xxClientError());
     }
 

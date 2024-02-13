@@ -1,12 +1,10 @@
 package com.devsolutions.DevSolutionsAPI.Controllers.AdminControllers;
 
 import com.devsolutions.DevSolutionsAPI.Entities.Orders;
-import com.devsolutions.DevSolutionsAPI.Entities.Users;
 import com.devsolutions.DevSolutionsAPI.Enums.UserRole;
 import com.devsolutions.DevSolutionsAPI.Services.OrderService;
-import com.devsolutions.DevSolutionsAPI.Services.ProductService;
 import com.devsolutions.DevSolutionsAPI.Services.UserService;
-import com.devsolutions.DevSolutionsAPI.Tools.CheckJwt;
+import com.devsolutions.DevSolutionsAPI.Tools.CheckCookie;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -23,19 +21,19 @@ import java.util.Optional;
 public class AdminOrdersController {
     private final OrderService orderService;
 
-    private final CheckJwt checkJwt;
+    private final CheckCookie checkCookie;
 
     @Autowired
-    public AdminOrdersController(OrderService orderService, CheckJwt checkJwt){
+    public AdminOrdersController(OrderService orderService, UserService userService){
         this.orderService = orderService;
 
-        this.checkJwt = checkJwt;
+        this.checkCookie = new CheckCookie(userService);
     }
 
     // Orders
     @GetMapping("/order/all")
     public ResponseEntity<Optional<List<Orders>>> getAllOrders(HttpServletRequest request){
-        Optional<UserRole> role = checkJwt.checkJwtForRole(request);
+        Optional<UserRole> role = checkCookie.CheckCookieForRole(request);
 
         if (role.isEmpty() || role.get() != UserRole.ADMIN)
             return ResponseEntity.status(401).body(Optional.empty());

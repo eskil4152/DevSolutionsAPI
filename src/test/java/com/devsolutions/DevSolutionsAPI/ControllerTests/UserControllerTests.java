@@ -1,9 +1,8 @@
 package com.devsolutions.DevSolutionsAPI.ControllerTests;
 
-import com.devsolutions.DevSolutionsAPI.ControllerTests.AdminControllers.AdminUsersControllerTests;
-import com.devsolutions.DevSolutionsAPI.CreateTestUser;
 import com.devsolutions.DevSolutionsAPI.Enums.UserRole;
 import com.devsolutions.DevSolutionsAPI.Security.JwtUtil;
+import jakarta.servlet.http.Cookie;
 import org.hamcrest.Matchers;
 import org.json.JSONObject;
 import org.junit.jupiter.api.*;
@@ -12,12 +11,10 @@ import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabas
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
-import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
-import org.springframework.transaction.annotation.Transactional;
 
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
@@ -28,7 +25,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class UserControllerTests {
     private final MockMvc mockMvc;
-    private CreateTestUser createTestUser;
 
     @Autowired
     public UserControllerTests(MockMvc mockMvc) {
@@ -51,7 +47,7 @@ public class UserControllerTests {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(jsonObject.toString()))
                 .andExpect(status().isOk())
-                .andExpect(header().exists("Authorization"));
+                .andExpect(cookie().exists("Authentication"));
     }
 
     @Test
@@ -73,23 +69,22 @@ public class UserControllerTests {
     @Test
     @Order(3)
     public void shouldLogInAndGetUserInfo() throws Exception {
+        Cookie cookie = new Cookie("Authentication", JwtUtil.generateToken("testuser", UserRole.USER));
+
         JSONObject jsonObject = new JSONObject()
                 .put("username", "testuser")
                 .put("password", "testpass");
 
-        MvcResult mvcResult = mockMvc.perform(MockMvcRequestBuilders.post(baseUrl + "/login")
+        mockMvc.perform(MockMvcRequestBuilders.post(baseUrl + "/login")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(jsonObject.toString()))
                 .andExpect(status().isOk())
-                .andExpect(header().exists("Authorization"))
+                .andExpect(cookie().exists("Authentication"))
                 .andReturn();
-
-        String header = mvcResult.getResponse().getHeader("Authorization");
-        System.out.println("HEADER DATA: " + header);
 
         mockMvc.perform(MockMvcRequestBuilders.get(baseUrl + "/user")
                 .contentType(MediaType.APPLICATION_JSON)
-                .header("Authorization", header))
+                .cookie(cookie))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.username", Matchers.containsString("testuser")));
     }

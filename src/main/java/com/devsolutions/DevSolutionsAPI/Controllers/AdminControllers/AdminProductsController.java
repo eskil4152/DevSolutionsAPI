@@ -1,15 +1,13 @@
 package com.devsolutions.DevSolutionsAPI.Controllers.AdminControllers;
 
 import com.devsolutions.DevSolutionsAPI.Entities.Products;
-import com.devsolutions.DevSolutionsAPI.Entities.Users;
 import com.devsolutions.DevSolutionsAPI.Enums.UserRole;
 import com.devsolutions.DevSolutionsAPI.RequestBodies.ProductsRequest;
 import com.devsolutions.DevSolutionsAPI.Services.ProductService;
 import com.devsolutions.DevSolutionsAPI.Services.UserService;
-import com.devsolutions.DevSolutionsAPI.Tools.CheckJwt;
+import com.devsolutions.DevSolutionsAPI.Tools.CheckCookie;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.ComponentScan;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -21,19 +19,19 @@ import java.util.Optional;
 public class AdminProductsController {
     private final ProductService productService;
 
-    private final CheckJwt checkJwt;
+    private final CheckCookie checkCookie;
 
     @Autowired
     public AdminProductsController(UserService userService, ProductService productService){
         this.productService = productService;
 
-        this.checkJwt = new CheckJwt(userService);
+        this.checkCookie = new CheckCookie(userService);
     }
 
     // Products
     @GetMapping("/products/all")
     public ResponseEntity<Optional<List<Products>>> getAllProductsAdmin(HttpServletRequest request){
-        Optional<UserRole> role = checkJwt.checkJwtForRole(request);
+        Optional<UserRole> role = checkCookie.CheckCookieForRole(request);
 
         if (role.isEmpty() || role.get() != UserRole.ADMIN)
             return ResponseEntity.status(401).body(Optional.empty());
@@ -43,7 +41,7 @@ public class AdminProductsController {
 
     @PostMapping("/products/new")
     public ResponseEntity<Optional<Products>> addProduct(@RequestBody ProductsRequest productsRequest, HttpServletRequest request){
-        Optional<UserRole> role = checkJwt.checkJwtForRole(request);
+        Optional<UserRole> role = checkCookie.CheckCookieForRole(request);
 
         if (role.isEmpty() || role.get() != UserRole.ADMIN)
             return ResponseEntity.status(401).body(Optional.empty());
@@ -58,7 +56,7 @@ public class AdminProductsController {
     // TODO Fix, does not know old name of product
     @PutMapping("/products/update")
     public ResponseEntity<Optional<Products>> updateProduct(@RequestBody ProductsRequest productsRequest, HttpServletRequest request){
-        Optional<UserRole> role = checkJwt.checkJwtForRole(request);
+        Optional<UserRole> role = checkCookie.CheckCookieForRole(request);
 
         if (role.isEmpty() || role.get() != UserRole.ADMIN)
             return ResponseEntity.status(401).body(Optional.empty());
@@ -73,7 +71,7 @@ public class AdminProductsController {
 
     @DeleteMapping("/products/delete/{id}")
     public ResponseEntity<?> deleteProduct(@PathVariable String id, HttpServletRequest request){
-        Optional<UserRole> role = checkJwt.checkJwtForRole(request);
+        Optional<UserRole> role = checkCookie.CheckCookieForRole(request);
 
         if (role.isEmpty() || role.get() != UserRole.ADMIN)
             return ResponseEntity.status(401).body(Optional.empty());
