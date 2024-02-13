@@ -1,6 +1,6 @@
 # DevSolutions API / Backend #
 
-[![Coverage Status](https://coveralls.io/repos/github/eskil4152/DevSolutionsAPI/badge.svg?branch=main)](https://coveralls.io/github/eskil4152/DevSolutionsAPI?branch=main)
+[![Coverage Status](https://coveralls.io/repos/github/eskil4152/DevSolutionsAPI/badge.svg?branch=work)](https://coveralls.io/github/eskil4152/DevSolutionsAPI?branch=work)
 
 The server for DevSolutions website and services
 
