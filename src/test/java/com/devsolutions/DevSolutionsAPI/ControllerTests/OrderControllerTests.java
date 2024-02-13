@@ -27,7 +27,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 public class OrderControllerTests {
     private final MockMvc mockMvc;
 
-    private Long orderId;
+    private static Long orderId;
     private final String baseUrl = "http://localhost:8080/api/order";
     private final String token = "Bearer " + JwtUtil.generateToken("orderuser", UserRole.USER);
     private final String tokenTwo = "Bearer " + JwtUtil.generateToken("orderusertwo", UserRole.USER);
@@ -81,7 +81,7 @@ public class OrderControllerTests {
         mockMvc.perform(MockMvcRequestBuilders.get(baseUrl + "/all")
                         .header("Authorization", token))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$[0].id", Matchers.is(orderId)))
+                .andExpect(jsonPath("$[0].id", Matchers.is(orderId.intValue())))
                 .andExpect(jsonPath("$[0].price", Matchers.is(199.0)))
                 .andExpect(jsonPath("$[0].user.username", Matchers.containsString("orderuser")))
                 .andExpect(jsonPath("$[0].products.id", Matchers.is(1)))
@@ -95,7 +95,7 @@ public class OrderControllerTests {
         mockMvc.perform(MockMvcRequestBuilders.get(baseUrl + "/1")
                         .header("Authorization", token))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("id", Matchers.is(orderId)))
+                .andExpect(jsonPath("id", Matchers.is(orderId.intValue())))
                 .andExpect(jsonPath("price", Matchers.is(199.0)))
                 .andExpect(jsonPath("user.username", Matchers.containsString("orderuser")))
                 .andExpect(jsonPath("products.id", Matchers.is(1)))
