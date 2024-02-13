@@ -101,22 +101,14 @@ public class UserController {
 
     @GetMapping("/logout")
     public ResponseEntity<?> logOut(HttpServletRequest request, HttpServletResponse response) {
-        Cookie[] cookies = request.getCookies();
+        Cookie cookie = new Cookie("Authentication", null);
+        cookie.setMaxAge(0);
+        cookie.setSecure(true);
+        cookie.setHttpOnly(true);
+        cookie.setPath("/");
 
-        if (cookies == null) {
-            return ResponseEntity.status(400).build();
-        }
+        response.addCookie(cookie);
 
-        for (Cookie cookie : cookies) {
-            if (cookie.getName().equals("Authentication")) {
-                cookie.setMaxAge(0);
-
-                response.addCookie(cookie);
-
-                return ResponseEntity.ok().build();
-            }
-        }
-
-        return ResponseEntity.status(400).build();
+        return ResponseEntity.ok().build();
     }
 }
