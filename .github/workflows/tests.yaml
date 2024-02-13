@@ -1,7 +1,7 @@
 name: Build, Test, and Check Coverage
 
 on:
-  push:
+  pull_request:
     branches:
       - main
 
