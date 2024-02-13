@@ -1,5 +1,7 @@
 # DevSolutions API / Backend #
 
+[![Coverage Status](https://coveralls.io/repos/github/eskil4152/DevSolutionsAPI/badge.svg?branch=main)](https://coveralls.io/github/eskil4152/DevSolutionsAPI?branch=main)
+
 The server for DevSolutions website and services
 
 ## HTTP Response Codes Used ##

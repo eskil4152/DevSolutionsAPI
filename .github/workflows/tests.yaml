@@ -1,9 +1,9 @@
 name: Build, Test, and Check Coverage
 
 on:
-  push:
+  pull_request:
     branches:
-      - work
+      - main
 
 jobs:
   build-and-test:
@@ -21,20 +21,4 @@ jobs:
 
       - name: Run tests and generate coverage report
         run: |
-          mvn clean test jacoco:report
-        # Generate JaCoCo coverage report
-
-      - name: Post coverage report - XML
-        uses: actions/upload-artifact@v2
-        with:
-          name: coverage-report-xml
-          path: target/site/jacoco/jacoco.xml
-
-      - name: Zip coverage report HTML directory
-        run: zip -r coverage-report-html.zip target/site/jacoco/
-
-      - name: Post coverage report - HTML
-        uses: actions/upload-artifact@v2
-        with:
-          name: coverage-report-html
-          path: coverage-report-html.zip
+          mvn clean test jacoco:report coveralls:report -DrepoToken=${{ secrets.COVERALLS_TOKEN }}

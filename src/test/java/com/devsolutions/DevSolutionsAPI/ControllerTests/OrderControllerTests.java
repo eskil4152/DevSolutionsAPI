@@ -1,7 +1,9 @@
 package com.devsolutions.DevSolutionsAPI.ControllerTests;
 
+import com.devsolutions.DevSolutionsAPI.Entities.Orders;
 import com.devsolutions.DevSolutionsAPI.Enums.UserRole;
 import com.devsolutions.DevSolutionsAPI.Security.JwtUtil;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.hamcrest.Matchers;
 import org.json.JSONObject;
 import org.junit.jupiter.api.*;
@@ -15,9 +17,6 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
-import java.util.Objects;
-
-import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @SpringBootTest
@@ -28,6 +27,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 public class OrderControllerTests {
     private final MockMvc mockMvc;
 
+    private static Long orderId;
     private final String baseUrl = "http://localhost:8080/api/order";
     private final String token = "Bearer " + JwtUtil.generateToken("orderuser", UserRole.USER);
     private final String tokenTwo = "Bearer " + JwtUtil.generateToken("orderusertwo", UserRole.USER);
@@ -64,11 +64,15 @@ public class OrderControllerTests {
                 .put("paymentMethod", "VISA")
                 .put("billingAddress", "Address");
 
-        mockMvc.perform(MockMvcRequestBuilders.post(baseUrl + "/new")
+        MvcResult result = mockMvc.perform(MockMvcRequestBuilders.post(baseUrl + "/new")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(jsonObject.toString())
                         .header("Authorization", token))
-                .andExpect(status().isOk());
+                .andExpect(status().isOk())
+                .andReturn();
+
+        Orders order = new ObjectMapper().readValue(result.getResponse().getContentAsString(), Orders.class);
+        orderId = order.getId();
     }
 
     @Test
@@ -77,7 +81,7 @@ public class OrderControllerTests {
         mockMvc.perform(MockMvcRequestBuilders.get(baseUrl + "/all")
                         .header("Authorization", token))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$[0].id", Matchers.is(1)))
+                .andExpect(jsonPath("$[0].id", Matchers.is(orderId.intValue())))
                 .andExpect(jsonPath("$[0].price", Matchers.is(199.0)))
                 .andExpect(jsonPath("$[0].user.username", Matchers.containsString("orderuser")))
                 .andExpect(jsonPath("$[0].products.id", Matchers.is(1)))
@@ -88,10 +92,10 @@ public class OrderControllerTests {
     @Test
     @Order(4)
     public void shouldGetSpecificOrderFromUser() throws Exception {
-        mockMvc.perform(MockMvcRequestBuilders.get(baseUrl + "/1")
+        mockMvc.perform(MockMvcRequestBuilders.get(baseUrl + "/" + orderId.intValue())
                         .header("Authorization", token))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("id", Matchers.is(1)))
+                .andExpect(jsonPath("id", Matchers.is(orderId.intValue())))
                 .andExpect(jsonPath("price", Matchers.is(199.0)))
                 .andExpect(jsonPath("user.username", Matchers.containsString("orderuser")))
                 .andExpect(jsonPath("products.id", Matchers.is(1)))
