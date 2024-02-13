@@ -52,3 +52,18 @@ jobs:
         with:
           name: coverage-badge
           path: coverage-badge.json
+
+      - name: Upload coverage badge as raw artifact
+        uses: actions/upload-artifact@v2
+        with:
+          name: coverage-badge-raw
+          path: coverage-badge.json
+
+      - name: Get coverage badge JSON URL
+        id: get-badge-url
+        run: |
+          echo "::set-output name=url::https://github.com/${{ github.repository }}/actions/artifacts/${{ steps.upload-coverage-badge-raw.outputs.artifact_id }}/raw/coverage-badge.json"
+
+      - name: Print coverage badge URL
+        run: |
+          echo "Coverage badge URL: ${{ steps.get-badge-url.outputs.url }}"
