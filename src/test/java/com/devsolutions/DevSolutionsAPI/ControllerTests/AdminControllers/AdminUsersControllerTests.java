@@ -1,10 +1,7 @@
 package com.devsolutions.DevSolutionsAPI.ControllerTests.AdminControllers;
 
-import com.devsolutions.DevSolutionsAPI.CreateTestUser;
 import com.devsolutions.DevSolutionsAPI.Enums.UserRole;
-import com.devsolutions.DevSolutionsAPI.Security.JwtFilter;
 import com.devsolutions.DevSolutionsAPI.Security.JwtUtil;
-import org.apache.el.stream.Optional;
 import org.hamcrest.Matchers;
 import org.json.JSONObject;
 import org.junit.jupiter.api.*;
@@ -13,16 +10,10 @@ import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabas
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
-import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
-import org.springframework.transaction.annotation.Transactional;
-
-import java.util.Arrays;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -91,7 +82,7 @@ public class AdminUsersControllerTests {
         mockMvc.perform(MockMvcRequestBuilders.get(baseUrl + "/mods")
                         .header("Authorization", "Bearer " + token))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$[0].username", Matchers.containsString("usernames")));
+                .andExpect(jsonPath("$..username", Matchers.contains("usernames")));
     }
 
     @Test
