@@ -7,9 +7,11 @@ import com.devsolutions.DevSolutionsAPI.Security.JwtUtil;
 import com.devsolutions.DevSolutionsAPI.RequestBodies.LoginRequest;
 import com.devsolutions.DevSolutionsAPI.Services.UserService;
 import com.devsolutions.DevSolutionsAPI.Tools.CheckCookie;
+import io.jsonwebtoken.Claims;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import org.checkerframework.checker.units.qual.C;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -95,5 +97,26 @@ public class UserController {
         );
 
         return ResponseEntity.ok(Optional.of(userCompact));
+    }
+
+    @GetMapping("/logout")
+    public ResponseEntity<?> logOut(HttpServletRequest request, HttpServletResponse response) {
+        Cookie[] cookies = request.getCookies();
+
+        if (cookies == null) {
+            return ResponseEntity.status(400).build();
+        }
+
+        for (Cookie cookie : cookies) {
+            if (cookie.getName().equals("Authentication")) {
+                cookie.setMaxAge(0);
+
+                response.addCookie(cookie);
+
+                return ResponseEntity.ok().build();
+            }
+        }
+
+        return ResponseEntity.status(400).build();
     }
 }

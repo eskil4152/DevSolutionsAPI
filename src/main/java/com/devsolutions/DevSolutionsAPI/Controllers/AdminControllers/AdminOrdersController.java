@@ -35,7 +35,7 @@ public class AdminOrdersController {
     public ResponseEntity<Optional<List<Orders>>> getAllOrders(HttpServletRequest request){
         Optional<UserRole> role = checkCookie.CheckCookieForRole(request);
 
-        if (role.isEmpty() || role.get() != UserRole.ADMIN)
+        if (role.isEmpty() || (role.get() != UserRole.ADMIN && role.get() != UserRole.OWNER))
             return ResponseEntity.status(401).body(Optional.empty());
 
         return ResponseEntity.ok(Optional.of(orderService.getAllOrders()));
