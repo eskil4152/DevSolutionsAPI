@@ -45,12 +45,12 @@ The server for DevSolutions website and services
     - [x] Grant moderator status
     - [x] Revoke moderator status
     - [x] Grant admin status
-    - [ ] Revoke admin status
+    - [x] Revoke admin status
   - [ ] Update Orders status
 
 - [x] FAQ Controller
-  - [ ] Get all
-- [ ] FAQ Error handling
+  - [x] Get all
+- [ ] FAQ Error handling?
 
 - [x] Order Controller
   - [x] Make new order
