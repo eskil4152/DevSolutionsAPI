@@ -6,8 +6,9 @@ target/
 .mvn/
 mvnw
 mvnw.cmd
+.env
 
-src/main/resources/.env
+.env
 PropertySourceConfig.java
 
 ### STS ###
