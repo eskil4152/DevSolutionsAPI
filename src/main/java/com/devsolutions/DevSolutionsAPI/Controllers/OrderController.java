@@ -8,6 +8,7 @@ import com.devsolutions.DevSolutionsAPI.Services.UserOrderService;
 import com.devsolutions.DevSolutionsAPI.Services.UserService;
 import com.devsolutions.DevSolutionsAPI.Tools.CheckCookie;
 import jakarta.servlet.http.HttpServletRequest;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -18,16 +19,12 @@ import java.util.Optional;
 @RequestMapping("/api/order")
 public class OrderController {
     private final OrderService orderService;
-    private final UserOrderService userOrderService;
-    private final UserService userService;
 
     private final CheckCookie checkCookie;
 
-    public OrderController(OrderService orderService, UserOrderService userOrderService, UserService userService){
+    @Autowired
+    public OrderController(OrderService orderService, UserService userService){
         this.orderService = orderService;
-        this.userOrderService = userOrderService;
-        this.userService = userService;
-
         this.checkCookie = new CheckCookie(userService);
     }
 

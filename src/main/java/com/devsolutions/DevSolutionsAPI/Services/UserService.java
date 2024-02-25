@@ -91,9 +91,8 @@ public class UserService {
                 break;
         }
 
-        if (newRole == UserRole.ADMIN || currentRole == UserRole.ADMIN) {
-            if (!(role == UserRole.OWNER))
-                return 401;
+        if (newRole == UserRole.ADMIN || currentRole == UserRole.ADMIN || role != UserRole.OWNER) {
+            return 401;
         }
 
         userRepository.changeUserRole(newRole, user);

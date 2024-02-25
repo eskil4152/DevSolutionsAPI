@@ -19,17 +19,11 @@ import java.util.Optional;
 @RequestMapping("/api/admin")
 public class AdminUsersController {
     private final UserService userService;
-    private final OrderService orderService;
-    private final ProductService productService;
-
     private final CheckCookie checkCookie;
 
     @Autowired
-    public AdminUsersController(UserService userService, OrderService orderService, ProductService productService){
+    public AdminUsersController(UserService userService){
         this.userService = userService;
-        this.orderService = orderService;
-        this.productService = productService;
-
         this.checkCookie = new CheckCookie(userService);
     }
 
