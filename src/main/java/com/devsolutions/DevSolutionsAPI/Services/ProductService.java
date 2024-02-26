@@ -53,7 +53,13 @@ public class ProductService {
         }
 
         productRepository.save(products);
-        productsCache.put((long) productsCache.size(), products);
+
+        try {
+            productsCache.put((productRepository.findByName(products.getName()).get().getId()), products);
+        } catch (Exception e){
+            System.out.println("Failed to cache, " + e);
+            return Optional.of(products);
+        }
 
         return Optional.of(products);
     }
