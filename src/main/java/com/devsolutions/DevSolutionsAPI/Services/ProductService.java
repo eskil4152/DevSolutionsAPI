@@ -24,6 +24,11 @@ public class ProductService {
         this.productsCache = new HashMap<>();
     }
 
+    @Scheduled(cron = "0 0 0 * * *")
+    public void clearCache(){
+        productsCache.clear();
+    }
+
     public Optional<Products> getProduct(long id){
         if (productsCache.containsKey(id)){
             return Optional.ofNullable(productsCache.get(id));
@@ -80,10 +85,5 @@ public class ProductService {
         productRepository.delete(dbProduct.get());
 
         return true;
-    }
-
-    @Scheduled(cron = "0 0 0 * * *")
-    public void clearCache(){
-        productsCache.clear();
     }
 }

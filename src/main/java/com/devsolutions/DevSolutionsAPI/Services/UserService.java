@@ -27,7 +27,7 @@ public class UserService {
         this.cache = new HashMap<>();
     }
 
-    @Scheduled(cron = "0 0 0 * * MON")
+    @Scheduled(cron = "0 0 0 * * *")
     public void resetUsersCache(){
         cache.clear();
     }
