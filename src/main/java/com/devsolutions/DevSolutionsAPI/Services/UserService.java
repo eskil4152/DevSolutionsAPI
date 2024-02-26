@@ -8,36 +8,50 @@ import com.devsolutions.DevSolutionsAPI.Security.PasswordEncoder;
 import com.devsolutions.DevSolutionsAPI.Repositories.UserRepository;
 import com.devsolutions.DevSolutionsAPI.Tools.ChangeRole;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
 
 @Service
 public class UserService {
     private final UserRepository userRepository;
+    private final HashMap<String, Users> cache;
 
     @Autowired
     public UserService(UserRepository userRepository){
         this.userRepository = userRepository;
+        this.cache = new HashMap<>();
+    }
+
+    @Scheduled(cron = "0 0 0 * * MON")
+    public void resetUsersCache(){
+        cache.clear();
     }
 
     public Optional<Users> login(String username, String password){
+        if (cache.containsKey(username)){
+            Users cachedUser = cache.get(username);
+            return PasswordEncoder.checkPassword(password, cachedUser.getPassword()) ? Optional.of(cachedUser) : Optional.empty();
+        }
+
         Optional<Users> user = userRepository.findByUsername(username);
 
-        if (user.isEmpty())
-            return Optional.empty();
-
-        Users existingUser = user.get();
-
-        boolean hashedPassword = PasswordEncoder.checkPassword(password, existingUser.getPassword());
-
-        if (!hashedPassword){
+        if (user.isEmpty()){
             return Optional.empty();
         }
 
-        return Optional.of(existingUser);
+        boolean checkPassword = PasswordEncoder.checkPassword(password, user.get().getPassword());
+
+        if (!checkPassword){
+            return Optional.empty();
+        }
+
+        cache.put(username, user.get());
+        return user;
     }
 
     public Optional<Users> register(String firstname, String lastname, String username, String password, String email){
