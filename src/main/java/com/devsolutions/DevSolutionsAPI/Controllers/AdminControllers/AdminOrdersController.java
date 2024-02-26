@@ -30,7 +30,6 @@ public class AdminOrdersController {
         this.checkCookie = new CheckCookie(userService);
     }
 
-    // Orders
     @GetMapping("/order/all")
     public ResponseEntity<Optional<List<Orders>>> getAllOrders(HttpServletRequest request){
         Optional<UserRole> role = checkCookie.CheckCookieForRole(request);
@@ -41,11 +40,13 @@ public class AdminOrdersController {
         return ResponseEntity.ok(Optional.of(orderService.getAllOrders()));
     }
 
+    // TODO implement
     @PostMapping("/order/update")
     public ResponseEntity<String> updateOrder(){
         return ResponseEntity.status(501).body("NOT IMPLEMENTED");
     }
 
+    // TODO implement
     @PostMapping("/order/cancel/{id}")
     public ResponseEntity<String> cancelOrder(){
         return ResponseEntity.status(501).body("NOT IMPLEMENTED");

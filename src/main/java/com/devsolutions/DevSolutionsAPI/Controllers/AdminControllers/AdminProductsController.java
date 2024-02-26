@@ -28,7 +28,6 @@ public class AdminProductsController {
         this.checkCookie = new CheckCookie(userService);
     }
 
-    // Products
     @GetMapping("/products/all")
     public ResponseEntity<Optional<List<Products>>> getAllProductsAdmin(HttpServletRequest request){
         Optional<UserRole> role = checkCookie.CheckCookieForRole(request);
