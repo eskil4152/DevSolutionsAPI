@@ -105,7 +105,7 @@ public class UserService {
                 break;
         }
 
-        if (newRole == UserRole.ADMIN || currentRole == UserRole.ADMIN || role != UserRole.OWNER) {
+        if ((newRole == UserRole.ADMIN || currentRole == UserRole.ADMIN) && role != UserRole.OWNER) {
             return 401;
         }
 
