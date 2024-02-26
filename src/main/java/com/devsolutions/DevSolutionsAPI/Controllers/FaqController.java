@@ -8,13 +8,16 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/api")
 public class FaqController {
 
     private final FaqService faqService;
+    private HashMap<String, Faq> cache;
 
     @Autowired
     public FaqController(FaqService faqService){
@@ -23,6 +26,8 @@ public class FaqController {
 
     @GetMapping("/faq")
     public ResponseEntity<List<Faq>> getFaq(){
-        return ResponseEntity.ok(faqService.getFaq());
+        List<Faq> faqs = faqService.getFaq();
+
+        return ResponseEntity.ok(faqs);
     }
 }

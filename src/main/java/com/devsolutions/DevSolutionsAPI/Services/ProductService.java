@@ -3,9 +3,12 @@ package com.devsolutions.DevSolutionsAPI.Services;
 import com.devsolutions.DevSolutionsAPI.Entities.Products;
 import com.devsolutions.DevSolutionsAPI.Repositories.ProductRepository;
 import com.devsolutions.DevSolutionsAPI.RequestBodies.ProductsRequest;
+import jnr.ffi.annotations.In;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
 
@@ -13,13 +16,23 @@ import java.util.Optional;
 public class ProductService {
 
     private final ProductRepository productRepository;
+    private HashMap<Long, Products> productsCache;
 
     @Autowired
     public ProductService(ProductRepository productRepository){
         this.productRepository = productRepository;
+        this.productsCache = new HashMap<>();
     }
 
     public Optional<Products> getProduct(long id){
+        if (productsCache.containsKey(id)){
+            return Optional.ofNullable(productsCache.get(id));
+        }
+
+        Optional<Products> products = productRepository.findById(id);
+
+        products.ifPresent(value -> productsCache.put(value.getId(), value));
+
         return productRepository.findById(id);
     }
 
@@ -35,6 +48,7 @@ public class ProductService {
         }
 
         productRepository.save(products);
+        productsCache.put((long) productsCache.size(), products);
 
         return Optional.of(products);
     }
@@ -51,6 +65,7 @@ public class ProductService {
             return dbProduct;
         }
 
+        productsCache.put(dbProduct.get().getId(), dbProduct.get());
         productRepository.save(dbProduct.get());
         return dbProduct;
     }
@@ -61,7 +76,14 @@ public class ProductService {
         if (dbProduct.isEmpty())
             return false;
 
+        productsCache.remove(dbProduct.get().getId());
         productRepository.delete(dbProduct.get());
+
         return true;
+    }
+
+    @Scheduled(cron = "0 0 0 * * *")
+    public void clearCache(){
+        productsCache.clear();
     }
 }
