@@ -32,8 +32,8 @@ The server for DevSolutions website and services
     - [ ] Remove
   - [ ] Products edit
     - [x] Add products
-    - [x] Edit products
     - [x] Remove products
+    - [ ] Edit products
     - [ ] Update for better efficiency and cost
   - [ ] Orders
     - [x] View all orders
