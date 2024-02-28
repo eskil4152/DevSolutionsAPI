@@ -60,8 +60,15 @@ public class OrderService {
         return orderRepository.findAll();
     }
 
-    public void updateOrder(){
+    public Optional<Orders> updateOrder(OrderRequest request){
+        Optional<Orders> order = orderRepository.findById(request.getOrderId());
 
+        if (order.isEmpty()) {
+            return order;
+        }
+
+        orderRepository.save(order.get());
+        return order;
     }
 
     public void cancelOrder(){

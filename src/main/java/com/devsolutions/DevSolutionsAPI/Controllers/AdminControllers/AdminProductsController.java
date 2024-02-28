@@ -52,7 +52,6 @@ public class AdminProductsController {
         return ResponseEntity.ok(products);
     }
 
-    // TODO Fix, does not know old name of product
     @PutMapping("/products/update")
     public ResponseEntity<Optional<Products>> updateProduct(@RequestBody ProductsRequest productsRequest, HttpServletRequest request){
         Optional<UserRole> role = checkCookie.CheckCookieForRole(request);

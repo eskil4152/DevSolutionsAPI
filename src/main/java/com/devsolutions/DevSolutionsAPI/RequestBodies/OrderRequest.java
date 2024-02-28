@@ -4,6 +4,7 @@ import com.devsolutions.DevSolutionsAPI.Enums.OrderStatus;
 import com.devsolutions.DevSolutionsAPI.Enums.PaymentStatus;
 
 public class OrderRequest {
+    private Long orderId;
     private String productId;
     private double price;
     private String notes;
@@ -11,6 +12,10 @@ public class OrderRequest {
     private String billingAddress;
     private PaymentStatus paymentStatus;
     private OrderStatus orderStatus;
+
+    public Long getOrderId() {
+        return orderId;
+    }
 
     public String getProductId() {
         return productId;

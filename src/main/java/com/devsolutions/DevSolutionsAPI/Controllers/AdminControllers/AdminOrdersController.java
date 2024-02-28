@@ -1,17 +1,16 @@
 package com.devsolutions.DevSolutionsAPI.Controllers.AdminControllers;
 
 import com.devsolutions.DevSolutionsAPI.Entities.Orders;
+import com.devsolutions.DevSolutionsAPI.Entities.Products;
 import com.devsolutions.DevSolutionsAPI.Enums.UserRole;
+import com.devsolutions.DevSolutionsAPI.RequestBodies.OrderRequest;
 import com.devsolutions.DevSolutionsAPI.Services.OrderService;
 import com.devsolutions.DevSolutionsAPI.Services.UserService;
 import com.devsolutions.DevSolutionsAPI.Tools.CheckCookie;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Optional;
@@ -42,8 +41,18 @@ public class AdminOrdersController {
 
     // TODO implement
     @PostMapping("/order/update")
-    public ResponseEntity<String> updateOrder(){
-        return ResponseEntity.status(501).body("NOT IMPLEMENTED");
+    public ResponseEntity<Optional<Orders>> updateOrder(@RequestBody OrderRequest orderRequest, HttpServletRequest request){
+        Optional<UserRole> role = checkCookie.CheckCookieForRole(request);
+
+        if (role.isEmpty() || (role.get() != UserRole.ADMIN && role.get() != UserRole.OWNER))
+            return ResponseEntity.status(401).body(Optional.empty());
+
+        Optional<Orders> orders = orderService.updateOrder(orderRequest);
+
+        if (orders.isEmpty())
+            return ResponseEntity.status(409).body(Optional.empty());
+
+        return ResponseEntity.ok(orders);
     }
 
     // TODO implement
