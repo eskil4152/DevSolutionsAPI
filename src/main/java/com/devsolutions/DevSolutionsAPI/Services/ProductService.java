@@ -16,7 +16,7 @@ import java.util.Optional;
 public class ProductService {
 
     private final ProductRepository productRepository;
-    private HashMap<Long, Products> productsCache;
+    private final HashMap<Long, Products> productsCache;
 
     @Autowired
     public ProductService(ProductRepository productRepository){
@@ -64,13 +64,8 @@ public class ProductService {
         return Optional.of(products);
     }
 
-    public Optional<Products> getProductByName(String name){
-        return productRepository.findByName(name);
-    }
-
     public Optional<Products> updateProduct(ProductsRequest request) {
-        Products products = new Products(request.getProductName(), request.getDescription(), request.getPrice());
-        Optional<Products> dbProduct = productRepository.findByName(products.getName());
+        Optional<Products> dbProduct = productRepository.findById(request.getId());
 
         if (dbProduct.isEmpty()) {
             return dbProduct;
