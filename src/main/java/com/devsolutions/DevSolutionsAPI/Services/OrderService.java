@@ -60,11 +60,28 @@ public class OrderService {
         return orderRepository.findAll();
     }
 
-    public void updateOrder(){
+    public Optional<Orders> updateOrder(OrderRequest request){
+        Optional<Orders> order = orderRepository.findById(request.getOrderId());
 
+        if (order.isEmpty()) {
+            return order;
+        }
+
+        order.get().setOrderStatus(request.getOrderStatus());
+        order.get().setDeveloperFeedback(request.getDeveloperFeedback());
+
+        orderRepository.save(order.get());
+        return order;
     }
 
-    public void cancelOrder(){
+    public boolean cancelOrder(Long id){
+        Optional<Orders> order = orderRepository.findById(id);
 
+        if (order.isEmpty())
+            return false;
+
+        orderRepository.delete(order.get());
+
+        return true;
     }
 }

@@ -7,6 +7,7 @@ CREATE TABLE Orders (
     notes VARCHAR(255),
     paymentMethod VARCHAR(255),
     billingAddress VARCHAR(255),
+    developerFeedback VARCHAR(510),
 
     paymentStatus VARCHAR(20) CHECK (paymentStatus IN ('AWAITING_PAYMENT', 'PAYMENT_RECEIVED', 'ERROR')),
     orderStatus VARCHAR(20) CHECK (orderStatus IN ('NOT_STARTED', 'STARTED', 'COMPLETED'))

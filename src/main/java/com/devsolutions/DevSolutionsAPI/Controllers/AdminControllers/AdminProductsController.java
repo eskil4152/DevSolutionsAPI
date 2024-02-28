@@ -28,7 +28,6 @@ public class AdminProductsController {
         this.checkCookie = new CheckCookie(userService);
     }
 
-    // Products
     @GetMapping("/products/all")
     public ResponseEntity<Optional<List<Products>>> getAllProductsAdmin(HttpServletRequest request){
         Optional<UserRole> role = checkCookie.CheckCookieForRole(request);
@@ -53,7 +52,6 @@ public class AdminProductsController {
         return ResponseEntity.ok(products);
     }
 
-    // TODO Fix, does not know old name of product
     @PutMapping("/products/update")
     public ResponseEntity<Optional<Products>> updateProduct(@RequestBody ProductsRequest productsRequest, HttpServletRequest request){
         Optional<UserRole> role = checkCookie.CheckCookieForRole(request);

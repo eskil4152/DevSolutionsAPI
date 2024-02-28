@@ -4,13 +4,21 @@ import com.devsolutions.DevSolutionsAPI.Enums.OrderStatus;
 import com.devsolutions.DevSolutionsAPI.Enums.PaymentStatus;
 
 public class OrderRequest {
+    private Long orderId;
     private String productId;
     private double price;
     private String notes;
     private String paymentMethod;
     private String billingAddress;
     private PaymentStatus paymentStatus;
+
     private OrderStatus orderStatus;
+
+    private String developerFeedback;
+
+    public Long getOrderId() {
+        return orderId;
+    }
 
     public String getProductId() {
         return productId;
@@ -32,6 +40,10 @@ public class OrderRequest {
         return billingAddress;
     }
 
+    public String getDeveloperFeedback() {
+        return developerFeedback;
+    }
+
     public PaymentStatus getPaymentStatus() {
         return paymentStatus;
     }
@@ -39,4 +51,5 @@ public class OrderRequest {
     public OrderStatus getOrderStatus() {
         return orderStatus;
     }
+
 }

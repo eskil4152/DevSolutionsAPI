@@ -32,13 +32,13 @@ The server for DevSolutions website and services
     - [ ] Remove
   - [ ] Products edit
     - [x] Add products
-    - [x] Edit products
     - [x] Remove products
+    - [x] Edit products
     - [ ] Update for better efficiency and cost
   - [ ] Orders
     - [x] View all orders
-    - [ ] Update orders
-    - [ ] Cancel orders
+    - [x] Update orders
+    - [x] Cancel orders
   - [ ] View all users / mods
     - [x] View all users
     - [x] View all moderators
