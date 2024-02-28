@@ -67,6 +67,9 @@ public class OrderService {
             return order;
         }
 
+        order.get().setOrderStatus(request.getOrderStatus());
+        order.get().setDeveloperFeedback(request.getDeveloperFeedback());
+
         orderRepository.save(order.get());
         return order;
     }

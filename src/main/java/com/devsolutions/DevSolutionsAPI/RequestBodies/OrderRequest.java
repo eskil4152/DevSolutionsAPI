@@ -11,7 +11,10 @@ public class OrderRequest {
     private String paymentMethod;
     private String billingAddress;
     private PaymentStatus paymentStatus;
+
     private OrderStatus orderStatus;
+
+    private String developerFeedback;
 
     public Long getOrderId() {
         return orderId;
@@ -37,6 +40,10 @@ public class OrderRequest {
         return billingAddress;
     }
 
+    public String getDeveloperFeedback() {
+        return developerFeedback;
+    }
+
     public PaymentStatus getPaymentStatus() {
         return paymentStatus;
     }
@@ -44,4 +51,5 @@ public class OrderRequest {
     public OrderStatus getOrderStatus() {
         return orderStatus;
     }
+
 }

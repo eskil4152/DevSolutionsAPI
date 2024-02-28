@@ -39,7 +39,7 @@ public class AdminOrdersController {
         return ResponseEntity.ok(Optional.of(orderService.getAllOrders()));
     }
 
-    @PostMapping("/order/update")
+    @PutMapping("/order/update")
     public ResponseEntity<Optional<Orders>> updateOrder(@RequestBody OrderRequest orderRequest, HttpServletRequest request){
         Optional<UserRole> role = checkCookie.CheckCookieForRole(request);
 
@@ -54,8 +54,7 @@ public class AdminOrdersController {
         return ResponseEntity.ok(orders);
     }
 
-    // TODO implement
-    @PostMapping("/order/cancel/{id}")
+    @DeleteMapping("/order/cancel/{id}")
     public ResponseEntity<?> cancelOrder(@PathVariable String id, HttpServletRequest request){
         Optional<UserRole> role = checkCookie.CheckCookieForRole(request);
 

@@ -27,6 +27,7 @@ public class Orders {
     Double price;
     Date orderDate;
     String notes;
+    String developerFeedback;
 
     String paymentMethod;
     String billingAddress;
@@ -38,7 +39,6 @@ public class Orders {
     OrderStatus orderStatus;
 
     public Orders(){
-
     }
 
     public Orders(Users user, Products products, Double price, Date orderDate, String notes, String paymentMethod, String billingAddress) {
@@ -49,6 +49,7 @@ public class Orders {
         this.notes = notes;
         this.paymentMethod = paymentMethod;
         this.billingAddress = billingAddress;
+        this.developerFeedback = "";
         this.paymentStatus = PaymentStatus.AWAITING_PAYMENT;
         this.orderStatus = OrderStatus.NOT_STARTED;
     }
@@ -85,11 +86,23 @@ public class Orders {
         return billingAddress;
     }
 
+    public String getDeveloperFeedback(){
+        return developerFeedback;
+    }
+
     public PaymentStatus getPaymentStatus() {
         return paymentStatus;
     }
 
     public OrderStatus getOrderStatus() {
         return orderStatus;
+    }
+
+    public void setDeveloperFeedback(String developerFeedback) {
+        this.developerFeedback = developerFeedback;
+    }
+
+    public void setOrderStatus(OrderStatus orderStatus) {
+        this.orderStatus = orderStatus;
     }
 }
