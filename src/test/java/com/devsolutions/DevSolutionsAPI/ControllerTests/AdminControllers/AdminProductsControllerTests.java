@@ -6,6 +6,7 @@ import jakarta.servlet.http.Cookie;
 import org.hamcrest.Matchers;
 import org.json.JSONObject;
 import org.junit.jupiter.api.*;
+import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -77,18 +78,20 @@ public class AdminProductsControllerTests {
 
     @Test
     @Order(4)
-    @Disabled
     public void shouldUpdateProduct() throws Exception {
         JSONObject object = new JSONObject()
-                .put("productName", "Product x")
+                .put("id", 6)
+                .put("productName", "Product X Remake")
                 .put("description", "Desc")
-                .put("price", 100);
+                .put("price", 1000);
 
-        mockMvc.perform(MockMvcRequestBuilders.post(baseUrl + "/new")
+        mockMvc.perform(MockMvcRequestBuilders.put(baseUrl + "/update")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(object.toString())
                         .cookie(adminCookie))
-                .andExpect(status().isOk());
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.name", Matchers.containsString("Product X Remake")))
+                .andExpect(jsonPath("$.id", Matchers.is(6)));
     }
 
     @Test
@@ -109,9 +112,18 @@ public class AdminProductsControllerTests {
 
     @Test
     @Order(6)
-    @Disabled
     public void shouldFailToUpdate() throws Exception {
+        JSONObject object = new JSONObject()
+                .put("id", 6)
+                .put("productName", "Product X Remake Two")
+                .put("description", "Desc")
+                .put("price", 1000);
 
+        mockMvc.perform(MockMvcRequestBuilders.put(baseUrl + "/update")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(object.toString())
+                .cookie(adminCookie))
+                .andExpect(status().is4xxClientError());
     }
 
     @Test

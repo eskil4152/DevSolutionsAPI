@@ -65,15 +65,20 @@ public class ProductService {
     }
 
     public Optional<Products> updateProduct(ProductsRequest request) {
-        Optional<Products> dbProduct = productRepository.findById(request.getId());
+        Optional<Products> product = productRepository.findById(request.getId());
 
-        if (dbProduct.isEmpty()) {
-            return dbProduct;
+        if (product.isEmpty()) {
+            return product;
         }
 
-        productsCache.put(dbProduct.get().getId(), dbProduct.get());
-        productRepository.save(dbProduct.get());
-        return dbProduct;
+        product.get().setName(request.getProductName());
+        product.get().setDescription(request.getDescription());
+        product.get().setPrice(request.getPrice());
+
+        productsCache.put(request.getId(), product.get());
+        productRepository.save(product.get());
+
+        return product;
     }
 
     public boolean deleteProduct(Long id){
