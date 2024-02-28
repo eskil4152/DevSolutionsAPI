@@ -71,7 +71,14 @@ public class OrderService {
         return order;
     }
 
-    public void cancelOrder(){
+    public boolean cancelOrder(Long id){
+        Optional<Orders> order = orderRepository.findById(id);
 
+        if (order.isEmpty())
+            return false;
+
+        orderRepository.delete(order.get());
+
+        return true;
     }
 }

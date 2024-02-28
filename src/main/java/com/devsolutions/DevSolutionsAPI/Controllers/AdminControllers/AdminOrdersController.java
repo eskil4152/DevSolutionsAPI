@@ -39,7 +39,6 @@ public class AdminOrdersController {
         return ResponseEntity.ok(Optional.of(orderService.getAllOrders()));
     }
 
-    // TODO implement
     @PostMapping("/order/update")
     public ResponseEntity<Optional<Orders>> updateOrder(@RequestBody OrderRequest orderRequest, HttpServletRequest request){
         Optional<UserRole> role = checkCookie.CheckCookieForRole(request);
@@ -57,7 +56,17 @@ public class AdminOrdersController {
 
     // TODO implement
     @PostMapping("/order/cancel/{id}")
-    public ResponseEntity<String> cancelOrder(){
-        return ResponseEntity.status(501).body("NOT IMPLEMENTED");
+    public ResponseEntity<?> cancelOrder(@PathVariable String id, HttpServletRequest request){
+        Optional<UserRole> role = checkCookie.CheckCookieForRole(request);
+
+        if (role.isEmpty() || (role.get() != UserRole.ADMIN && role.get() != UserRole.OWNER))
+            return ResponseEntity.status(401).body(Optional.empty());
+
+        boolean didDelete = orderService.cancelOrder(Long.parseLong(id));
+
+        if (!didDelete)
+            return ResponseEntity.notFound().build();
+
+        return ResponseEntity.ok().build();
     }
 }
