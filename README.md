@@ -1,6 +1,7 @@
 # DevSolutions API / Backend #
 
 [![Coverage Status](https://coveralls.io/repos/github/eskil4152/DevSolutionsAPI/badge.svg?branch=work)](https://coveralls.io/github/eskil4152/DevSolutionsAPI?branch=work)
+[![Codacy Badge](https://app.codacy.com/project/badge/Grade/abff16742858447cb1cfd91df8d4b05e)](https://app.codacy.com/gh/eskil4152/DevSolutionsAPI/dashboard?utm_source=gh&utm_medium=referral&utm_content=&utm_campaign=Badge_grade)
 
 The server for DevSolutions website and services
 
